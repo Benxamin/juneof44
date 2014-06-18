@@ -85,9 +85,61 @@ footer {
 	position: relative;
 	vertical-align: middle;
 }
-.original {
+/* Crop Tool */
+.crop-border {
 	border: 1px solid #000;
 	border-bottom-width: 2px;
+	margin: 0 auto;
+	position: relative;
+	height: 500px;
+	width: 800px;
+}
+.original {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.overlay,
+.handle {
+	border: 1px solid #fff;
+	position: absolute;
+}
+.overlay {
+	height: 300px;
+	width: 300px;
+}
+.handle {
+	background: #fff;
+	border: 1px solid #fff;
+	position: absolute;
+	height: 3px;
+	width: 3px;
+	bottom: -3px;
+}
+.handle.nw,
+.handle.ne {
+	top: -3px;
+	left: -3px;
+}
+.handle.ne {
+	left: auto;
+	right: -3px;
+}
+.handle.sw,
+.handle.se {
+	left: -3px;
+}
+.handle.se {
+	left: auto;
+	right: -3px;
+}
+.handle.se,
+.handle.nw {
+	cursor: nwse-resize;
+}
+ .handle.ne,
+ .handle.sw {
+ 	cursor: nesw-resize;
 }
 </style>
 	<header aria-role="header">
@@ -112,9 +164,18 @@ footer {
 	</footer>
 	<div class="modal" id="subModal">
 		<div class="modal-inner">
-			<img class="original" src="http://placekitten.com/800/500" title="Cropping...">
+			<div class="crop-border">
+				<img class="original" src="http://placekitten.com/800/500" title="Cropping...">
+				<div class="overlay">
+					<div class="handle nw"></div>
+					<div class="handle ne"></div>
+					<div class="handle se"></div>
+					<div class="handle sw"></div>
+				</div>
+			</div>
 		</div>
 	</div>
+
 	<script type="text/javascript">
 		function showModal(someId) {
 			var submodal = document.getElementById(someId);
@@ -129,7 +190,6 @@ footer {
 				}
 			});
 		}
-
 		function hideModal(someId) {
 			var submodal = document.getElementById(someId);
 			var spot = subModal.className.indexOf("show");
@@ -144,8 +204,6 @@ footer {
 		cropBtn[0].addEventListener("click", function() {
 			showModal("subModal");
 		});
-
-
 	</script>
 </body>
 </html>
