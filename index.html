@@ -69,7 +69,7 @@ footer {
 /* Modal */
 .modal {
 	background: rgba(21, 21, 21, 0.85);
-	display: table;
+	display: none;
 	top: 0;
 	left: 0;
 	right: 0;
@@ -87,6 +87,7 @@ footer {
 }
 .original {
 	border: 1px solid #000;
+	border-bottom-width: 2px;
 }
 </style>
 	<header aria-role="header">
@@ -109,10 +110,42 @@ footer {
 			<h6>cropper</h6>
 		</div>
 	</footer>
-	<div class="modal">
+	<div class="modal" id="subModal">
 		<div class="modal-inner">
 			<img class="original" src="http://placekitten.com/800/500" title="Cropping...">
 		</div>
 	</div>
+	<script type="text/javascript">
+		function showModal(someId) {
+			var submodal = document.getElementById(someId);
+			submodal.setAttribute("style", "display:table;");
+			submodal.className += ' show';
+
+			document.addEventListener("keydown", function(e) {
+    			e = e || window.event;
+    			var keycode = (typeof(e.which) == "number") ? e.which : e.keyCode;
+    			if (keycode === 27) {
+					hideModal(someId);
+				}
+			});
+		}
+
+		function hideModal(someId) {
+			var submodal = document.getElementById(someId);
+			var spot = subModal.className.indexOf("show");
+
+			if (spot > -1) {
+				submodal.setAttribute("style", "display:none;");
+				submodal.className = submodal.className;
+			}
+		}
+
+		var cropBtn = document.getElementsByClassName("img-crop");
+		cropBtn[0].addEventListener("click", function() {
+			showModal("subModal");
+		});
+
+
+	</script>
 </body>
 </html>
