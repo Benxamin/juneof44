@@ -1,0 +1,91 @@
+<html>
+<head>
+	<title>Cropper</title>
+</head>
+<body>
+<style type="text/css">
+/* Page setup */
+body {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans;
+	margin: 0;
+}
+header {
+	background: #f1f1f1;
+	border-bottom: 2px solid #333;
+}
+article {
+
+}
+footer {
+	background: #212121;
+	color: #c00;
+	text-align: center;
+}
+.inner {
+	padding: 1em 0;
+	margin: 0 auto;
+	max-width: 800px;
+	min-width: 300px;
+}
+/* Control Setup */
+.image {
+	background: url(http://placekitten.com/800/500); 
+	background-size: cover; 
+	height: 300px; 
+	width: 300px; 
+	position: relative;
+}
+.img-control {
+	background: #999;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	display: block;
+	height: 48px;
+	width: 48px;
+	font-size: 35px;
+	line-height: 42px;
+	text-align: center;
+	overflow: hidden;
+	opacity: 0.8;
+	position: absolute;
+}
+.img-control:hover,
+.img-control:active {
+	opacity: 1.0;
+}
+.img-delete {
+	top: 0;
+	right: 0;
+}
+.img-rotate {
+	bottom: 8px;
+	left: 8px;
+}
+.img-crop {
+	bottom: 8px;
+	left: 68px;
+}
+</style>
+	<header aria-role="header">
+		<div class="inner">
+			<h1>Cropper</h1>
+		</div>
+	</header>
+	<article aria-role="main">
+		<div class="inner">
+			<h4>Cropper</h4>
+			<div class="image">
+				<button class="img-control img-delete" title="Delete this image">&times;</button>
+				<button class="img-control img-rotate" title="Rotate this image 90º clockwise">↱</button>
+				<button class="img-control img-crop" title="Crop this image">&#164;</button>
+			</div>
+		</div>	
+	</article>
+	<footer aria-role="footer">
+		<div class="inner">
+			<h6>cropper</h6>
+		</div>
+	</footer>
+</body>
+</html>
