@@ -4,7 +4,7 @@
 </head>
 <body>
 <style type="text/css">
-/* Page setup */
+/* Page */
 body {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans;
 	margin: 0;
@@ -27,7 +27,7 @@ footer {
 	max-width: 800px;
 	min-width: 300px;
 }
-/* Control Setup */
+/* Image Control */
 .image {
 	background: url(http://placekitten.com/800/500); 
 	background-size: cover; 
@@ -66,6 +66,28 @@ footer {
 	bottom: 8px;
 	left: 68px;
 }
+/* Modal */
+.modal {
+	background: rgba(21, 21, 21, 0.85);
+	display: table;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	position: absolute;
+	text-align: center;
+	height: 101%;
+	width: 101%;
+	z-index: 100;
+}
+.modal-inner {
+	display: table-cell;
+	position: relative;
+	vertical-align: middle;
+}
+.original {
+	border: 1px solid #000;
+}
 </style>
 	<header aria-role="header">
 		<div class="inner">
@@ -87,5 +109,10 @@ footer {
 			<h6>cropper</h6>
 		</div>
 	</footer>
+	<div class="modal">
+		<div class="modal-inner">
+			<img class="original" src="http://placekitten.com/800/500" title="Cropping...">
+		</div>
+	</div>
 </body>
 </html>
