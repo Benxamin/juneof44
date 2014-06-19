@@ -1,6 +1,8 @@
+<! doctype HTML:>
 <html>
 <head>
 	<title>Cropper</title>
+	<script type="text/javascript" src="draggabilly.min.js"></script>
 </head>
 <body>
 <style type="text/css">
@@ -88,11 +90,46 @@ footer {
 /* Crop Tool */
 .crop-border {
 	border: 1px solid #000;
-	border-bottom-width: 2px;
+	background: #000;
 	margin: 0 auto;
 	position: relative;
+	height: 550px;
+	width: 800px;
+}
+.crop-btns {
+	color: #fff;
+	height: 50px;
+	font-weight: bold;
+	font-size: 1em;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+.crop-container {
 	height: 500px;
 	width: 800px;
+}
+.crop-btns button {
+	background: none;
+	border: none;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans;
+	font-size: 0.75em;
+	font-weight: bold;
+}
+button.cancel {
+	color: #fff;
+	display: inline;
+	float: left;
+	margin: 1em;
+}
+button.crop {
+	background: #e1e1e1;
+	border-radius: 3px;
+	height: 32px;
+	float: right;
+	margin: 0.5em 1em;
+	padding: 0 1em;
 }
 .original {
 	position: absolute;
@@ -111,28 +148,28 @@ footer {
 }
 .handle {
 	background: #fff;
-	border: 1px solid #fff;
 	position: absolute;
-	height: 3px;
-	width: 3px;
-	bottom: -3px;
+	height: 11px;
+	width: 11px;
+	bottom: -6px;
+	opacity: 0.75
 }
 .handle.nw,
 .handle.ne {
-	top: -3px;
-	left: -3px;
+	top: -6px;
+	left: -6px;
 }
 .handle.ne {
 	left: auto;
-	right: -3px;
+	right: -6px;
 }
 .handle.sw,
 .handle.se {
-	left: -3px;
+	left: -6px;
 }
 .handle.se {
 	left: auto;
-	right: -3px;
+	right: -6px;
 }
 .handle.se,
 .handle.nw {
@@ -166,12 +203,18 @@ footer {
 	<div class="modal" id="subModal">
 		<div class="modal-inner">
 			<div class="crop-border">
-				<img class="original" src="http://placekitten.com/800/500" title="Cropping...">
-				<div class="overlay">
-					<div class="handle nw"></div>
-					<div class="handle ne"></div>
-					<div class="handle se"></div>
-					<div class="handle sw"></div>
+				<div class="crop-container" id="crop-container">
+					<img class="original" src="http://placekitten.com/800/500" title="Cropping...">
+					<div class="overlay" id="crop-zone" draggable="true">
+						<div class="handle nw"></div>
+						<div class="handle ne"></div>
+						<div class="handle se"></div>
+						<div class="handle sw"></div>
+					</div>
+				</div>
+				<div class="crop-btns">
+					<button class="cancel">Cancel</button>
+					<button class="crop">Done Cropping</button>
 				</div>
 			</div>
 		</div>
@@ -201,10 +244,38 @@ footer {
 			}
 		}
 
-		var cropBtn = document.getElementsByClassName("img-crop");
-		cropBtn[0].addEventListener("click", function() {
+		var cropCtl = document.getElementsByClassName("img-crop");
+		cropCtl[0].addEventListener("click", function() {
 			showModal("subModal");
 		});
+
+		var cropCancel = document.getElementsByClassName("cancel");
+		cropCancel[0].addEventListener("click", function() {
+			hideModal("subModal");
+		});
+
+		var cropDone = document.getElementsByClassName("crop");
+		cropDone[0].addEventListener("click", function() {
+			console.log("Done!");
+			hideModal("subModal");
+		});
+
+		var cropZone = document.getElementById("crop-zone");
+		var draggr = new Draggabilly(cropZone, { containment: "#crop-container"});
+		draggr.on("dragEnd", function(draggr, event, pointer) {
+			var cropStartX = draggr.position.x,
+					cropStartY = draggr.position.y,
+					cropStopX = (cropStartX + draggr.size.innerWidth),
+					cropStopY = (cropStartY + draggr.size.innerHeight);
+
+			console.group("cropDims");
+			console.log("cropStartX: "+ cropStartX);
+			console.log("cropStartY: "+ cropStartY);
+			console.log("cropStopX: "+ cropStopX);
+			console.log("cropStartY: "+ cropStartY);
+			console.groupEnd();
+		});
+
 	</script>
 </body>
 </html>
