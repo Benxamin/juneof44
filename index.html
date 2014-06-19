@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Cropper</title>
+	<script type="text/javascript" src="eventListener.polyfill.js"></script>
 	<script type="text/javascript" src="draggabilly.min.js"></script>
 </head>
 <body>
@@ -200,7 +201,7 @@ button.crop {
 			<h6>cropper</h6>
 		</div>
 	</footer>
-	<div class="modal" id="subModal">
+	<div class="modal" id="cropModal">
 		<div class="modal-inner">
 			<div class="crop-border">
 				<div class="crop-container" id="crop-container">
@@ -221,43 +222,44 @@ button.crop {
 	</div>
 
 	<script type="text/javascript">
-		function showModal(someId) {
-			var submodal = document.getElementById(someId);
+		var submodal =  document.getElementById("cropModal");
+		if (!submodal) {
+			throw new Error("No element 'submodal'");
+		}
+
+		var escapeModal = function(e) {
+			e = e || window.event;
+			var keycode = (typeof(e.which) == "number") ? e.which : e.keyCode;
+			if (keycode === 27) {
+				hideModal(submodal);
+			}
+		};
+
+		var showModal = function() {
 			submodal.setAttribute("style", "display:table;");
 			submodal.className += ' show';
 
-			document.addEventListener("keydown", function(e) {
-    			e = e || window.event;
-    			var keycode = (typeof(e.which) == "number") ? e.which : e.keyCode;
-    			if (keycode === 27) {
-					hideModal(someId);
-				}
-			});
-		}
-		function hideModal(someId) {
-			var submodal = document.getElementById(someId);
-			var spot = subModal.className.indexOf("show");
+			document.addEventListener("keydown", escapeModal, false);
+		};
 
-			if (spot > -1) {
+		var hideModal = function() {
+			if (submodal.className.indexOf("show") > -1) {
 				submodal.setAttribute("style", "display:none;");
-				submodal.className = submodal.className;
+				submodal.className = submodal.className.replace(/\bshow\b/,'');
 			}
-		}
+			document.removeEventListener("keydown", escapeModal, false);
+		};
 
 		var cropCtl = document.getElementsByClassName("img-crop");
-		cropCtl[0].addEventListener("click", function() {
-			showModal("subModal");
-		});
+		cropCtl[0].addEventListener("click", showModal, false);
 
 		var cropCancel = document.getElementsByClassName("cancel");
-		cropCancel[0].addEventListener("click", function() {
-			hideModal("subModal");
-		});
+		cropCancel[0].addEventListener("click", hideModal, false);
 
 		var cropDone = document.getElementsByClassName("crop");
 		cropDone[0].addEventListener("click", function() {
 			console.log("Done!");
-			hideModal("subModal");
+			hideModal();
 		});
 
 		var cropZone = document.getElementById("crop-zone");
