@@ -240,6 +240,7 @@ button.crop {
 		if (!submodal) {
 			throw new Error("No element 'submodal'");
 		}
+		var cropObject = {};
 
 		var escapeModal = function(e) {
 			e = e || window.event;
@@ -263,6 +264,13 @@ button.crop {
 			}
 		};
 
+		var sendCrop = function() {
+			// TODO: get request to API
+			// TODO: API
+			console.log("cropObject: "+ cropObject);
+			console.dir(cropObject);
+		};
+
 		var cropCtl = document.getElementsByClassName("img-crop");
 		cropCtl[0].addEventListener("click", showModal, false);
 
@@ -272,23 +280,19 @@ button.crop {
 		var cropDone = document.getElementsByClassName("crop");
 		cropDone[0].addEventListener("click", function() {
 			console.log("Done!");
+			sendCrop();
 			hideModal();
 		});
 
 		var cropZone = document.getElementById("crop-zone");
-		var draggr = new Draggabilly(cropZone, { containment: "#crop-container"});
-		draggr.on("dragEnd", function(draggr, event, pointer) {
-			var cropStartX = draggr.position.x,
-					cropStartY = draggr.position.y,
-					cropStopX = (cropStartX + draggr.size.innerWidth),
-					cropStopY = (cropStartY + draggr.size.innerHeight);
-
-			console.group("cropDims");
-			console.log("cropStartX: "+ cropStartX);
-			console.log("cropStartY: "+ cropStartY);
-			console.log("cropStopX: "+ cropStopX);
-			console.log("cropStartY: "+ cropStartY);
-			console.groupEnd();
+		var d = new Draggabilly(cropZone, { containment: "#crop-container"});
+		d.on("dragEnd", function(d, event, pointer) {
+			cropObject = {
+				"cropStartX": d.position.x,
+				"cropStartY": d.position.y,
+				"cropStopX": (d.position.x + d.size.innerWidth),
+				"cropStopY": (d.position.y + d.size.innerHeight)
+			};
 		});
 
 	</script>
