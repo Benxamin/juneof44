@@ -1,4 +1,4 @@
-<! doctype HTML:>
+<!doctype HTML>
 <html>
 <head>
 	<title>Cropper</title>
@@ -7,32 +7,46 @@
 </head>
 <body>
 <style type="text/css">
+
 /* Page */
 body {
+	background-color: #666;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans;
 	margin: 0;
+}
+h1, h2, h3, h4, h5, h6, p, ul {
+	margin-top: 0;
 }
 header {
 	background: #f1f1f1;
 	border-bottom: 2px solid #333;
 }
+header h1 {
+	margin-bottom: 0;
+}
 article {
 
 }
 footer {
-	background: #212121;
-	color: #c00;
+	background: #333;
+	border-top: 2px solid #333;
+	border-bottom: 2px solid #333;
+	color: #ccc;
 	text-align: center;
 }
 .inner {
-	padding: 1em 0;
+	border-left: 2px solid #333;
+	border-right: 2px solid #333;
+	background: #e1e1e1;
+	padding: 2em;
 	margin: 0 auto;
-	max-width: 800px;
+	max-width: 950px;
 	min-width: 300px;
 }
+
 /* Image Control */
 .image {
-	background: url(http://placekitten.com/800/500); 
+	background: url(http://placekitten.com/800/500) center center no-repeat #666; 
 	background-size: cover; 
 	height: 300px; 
 	width: 300px; 
@@ -198,7 +212,7 @@ button.crop {
 	</article>
 	<footer aria-role="footer">
 		<div class="inner">
-			<h6>cropper</h6>
+			<h6>&copy; 2014 The Berts Master</h6>
 		</div>
 	</footer>
 	<div class="modal" id="cropModal">
@@ -238,7 +252,6 @@ button.crop {
 		var showModal = function() {
 			submodal.setAttribute("style", "display:table;");
 			submodal.className += ' show';
-
 			document.addEventListener("keydown", escapeModal, false);
 		};
 
@@ -246,8 +259,8 @@ button.crop {
 			if (submodal.className.indexOf("show") > -1) {
 				submodal.setAttribute("style", "display:none;");
 				submodal.className = submodal.className.replace(/\bshow\b/,'');
+				document.removeEventListener("keydown", escapeModal, false);
 			}
-			document.removeEventListener("keydown", escapeModal, false);
 		};
 
 		var cropCtl = document.getElementsByClassName("img-crop");
