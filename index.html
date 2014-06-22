@@ -105,13 +105,14 @@ footer {
 /* Crop Tool */
 .crop-border {
 	border: 1px solid #000;
-	background: #000;
+	background: #666;
 	margin: 0 auto;
 	position: relative;
 	height: 550px;
 	width: 800px;
 }
 .crop-btns {
+	background: #000;
 	color: #fff;
 	height: 50px;
 	font-weight: bold;
@@ -220,16 +221,16 @@ button.crop {
 			<div class="crop-border">
 				<div class="crop-container" id="crop-container">
 					<img class="original" src="http://placekitten.com/800/500" title="Cropping...">
+					<div class="crop-btns">
+						<button class="cancel">Cancel</button>
+						<button class="crop">Done Cropping</button>
+					</div>
 					<div class="overlay" id="crop-zone" draggable="true">
 						<div class="handle nw"></div>
 						<div class="handle ne"></div>
 						<div class="handle se"></div>
 						<div class="handle sw"></div>
 					</div>
-				</div>
-				<div class="crop-btns">
-					<button class="cancel">Cancel</button>
-					<button class="crop">Done Cropping</button>
 				</div>
 			</div>
 		</div>
@@ -243,17 +244,17 @@ button.crop {
 		var cropObject = {};
 
 		var setAction = function(className, eventName, callback) {
-			var ctls = document.getElementsByClassName(className); 
-			if (ctls && ctls.length > 0) { 
+			var ctls = document.getElementsByClassName(className);
+			if (ctls && ctls.length > 0) {
 				var i = 0;
 				for(i; i < ctls.length; i += 1) {
 					if (ctls[i].addEventListener) {
-					  ctls[i].addEventListener(eventName, callback, false); 
-					} else if (ctls[i].attachEvent)  {
+					  ctls[i].addEventListener(eventName, callback, false);
+					} else if (ctls[i].attachEvent) {
 					  el.attachEvent('on'+ eventName, callback);
 					}
 				}
-			} 
+			}
 		}
 
 		var escapeModal = function(e) {
@@ -277,10 +278,9 @@ button.crop {
 				document.removeEventListener("keydown", escapeModal, false);
 			}
 		};
-		
+
 		var resizeCropFrame = function(event) {
 			console.dir(event);
-			
 		};
 
 		var doCrop = function() {
@@ -289,7 +289,7 @@ button.crop {
 			// TODO: API
 			// sendCrop();
 			hideModal();
-			console.log("cropObject: "+ cropObject);
+			// console.log("cropObject: "+ cropObject);
 			console.dir(cropObject);
 		};
 
