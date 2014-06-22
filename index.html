@@ -41,7 +41,7 @@ footer {
 	padding: 2em;
 	margin: 0 auto;
 	max-width: 950px;
-	min-width: 300px;
+	min-width: 350px;
 }
 
 /* Image Control */
@@ -242,6 +242,20 @@ button.crop {
 		}
 		var cropObject = {};
 
+		var setAction = function(className, eventName, callback) {
+			var ctls = document.getElementsByClassName(className); 
+			if (ctls && ctls.length > 0) { 
+				var i = 0;
+				for(i; i < ctls.length; i += 1) {
+					if (ctls[i].addEventListener) {
+					  ctls[i].addEventListener(eventName, callback, false); 
+					} else if (ctls[i].attachEvent)  {
+					  el.attachEvent('on'+ eventName, callback);
+					}
+				}
+			} 
+		}
+
 		var escapeModal = function(e) {
 			e = e || window.event;
 			var keycode = (typeof(e.which) == "number") ? e.which : e.keyCode;
@@ -263,26 +277,26 @@ button.crop {
 				document.removeEventListener("keydown", escapeModal, false);
 			}
 		};
+		
+		var resizeCropFrame = function(event) {
+			console.dir(event);
+			
+		};
 
-		var sendCrop = function() {
-			// TODO: get request to API
+		var doCrop = function() {
+			console.log("Done!");
+			// TODO: GET request to API
 			// TODO: API
+			// sendCrop();
+			hideModal();
 			console.log("cropObject: "+ cropObject);
 			console.dir(cropObject);
 		};
 
-		var cropCtl = document.getElementsByClassName("img-crop");
-		cropCtl[0].addEventListener("click", showModal, false);
-
-		var cropCancel = document.getElementsByClassName("cancel");
-		cropCancel[0].addEventListener("click", hideModal, false);
-
-		var cropDone = document.getElementsByClassName("crop");
-		cropDone[0].addEventListener("click", function() {
-			console.log("Done!");
-			sendCrop();
-			hideModal();
-		});
+		setAction("img-crop", "click", showModal);
+		setAction("cancel", "click", hideModal);
+		setAction("crop", "click", doCrop);
+		setAction("se", "mousedown", resizeCropFrame);
 
 		var cropZone = document.getElementById("crop-zone");
 		var d = new Draggabilly(cropZone, { containment: "#crop-container"});
