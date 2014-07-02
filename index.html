@@ -3,7 +3,8 @@
 <head>
 	<title>Cropper</title>
 	<script type="text/javascript" src="eventListener.polyfill.js"></script>
-	<script type="text/javascript" src="draggabilly.min.js"></script>
+	<!-- <script type="text/javascript" src="draggabilly.min.js"></script> -->
+	<script type="text/javascript" src="drag-resize.js"></script>
 </head>
 <body>
 <style type="text/css">
@@ -296,18 +297,20 @@ button.crop {
 		setAction("img-crop", "click", showModal);
 		setAction("cancel", "click", hideModal);
 		setAction("crop", "click", doCrop);
-		setAction("se", "mousedown", resizeCropFrame);
+		//setAction("se", "mousedown", resizeCropFrame);
 
 		var cropZone = document.getElementById("crop-zone");
-		var d = new Draggabilly(cropZone, { containment: "#crop-container"});
-		d.on("dragEnd", function(d, event, pointer) {
-			cropObject = {
-				"cropStartX": d.position.x,
-				"cropStartY": d.position.y,
-				"cropStopX": (d.position.x + d.size.innerWidth),
-				"cropStopY": (d.position.y + d.size.innerHeight)
-			};
-		});
+
+		
+		// var d = new Draggabilly(cropZone, { containment: "#crop-container"});
+		// d.on("dragEnd", function(d, event, pointer) {
+		// 	cropObject = {
+		// 		"cropStartX": d.position.x,
+		// 		"cropStartY": d.position.y,
+		// 		"cropStopX": (d.position.x + d.size.innerWidth),
+		// 		"cropStopY": (d.position.y + d.size.innerHeight)
+		// 	};
+		// });
 
 	</script>
 </body>
