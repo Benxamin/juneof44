@@ -1,0 +1,13 @@
+  <script type="text/javascript">
+    Draggabilly.js
+    var cropZone = document.getElementById("crop-zone");
+    var d = new Draggabilly(cropZone, { containment: "#crop-container"});
+    d.on("dragEnd", function(d, event, pointer) {
+      cropObject = {
+        "cropStartX": d.position.x,
+        "cropStartY": d.position.y,
+        "cropStopX": (d.position.x + d.size.innerWidth),
+        "cropStopY": (d.position.y + d.size.innerHeight)
+      };
+    });
+  </script>
