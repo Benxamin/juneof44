@@ -9,214 +9,214 @@
 <body>
 <style type="text/css">
 
-/* Page */
-body {
-	background-color: #666;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans;
-	margin: 0;
-}
-h1, h2, h3, h4, h5, h6, p, ul {
-	margin-top: 0;
-}
-header {
-	background: #f1f1f1;
-	border-bottom: 2px solid #333;
-}
-header h1 {
-	margin-bottom: 0;
-}
-article {
+	/* Page */
+	body {
+		background-color: #666;
+		font-family: "Helvetica Neue", Helvetica, Arial, sans;
+		margin: 0;
+	}
+	h1, h2, h3, h4, h5, h6, p, ul {
+		margin-top: 0;
+	}
+	header {
+		background: #f1f1f1;
+		border-bottom: 2px solid #333;
+	}
+	header h1 {
+		margin-bottom: 0;
+	}
+	article {
 
-}
-footer {
-	background: #333;
-	border-top: 2px solid #333;
-	border-bottom: 2px solid #333;
-	color: #ccc;
-	text-align: center;
-}
-.inner {
-	border-left: 2px solid #333;
-	border-right: 2px solid #333;
-	background: #e1e1e1;
-	padding: 2em;
-	margin: 0 auto;
-	max-width: 950px;
-	min-width: 350px;
-}
+	}
+	footer {
+		background: #333;
+		border-top: 2px solid #333;
+		border-bottom: 2px solid #333;
+		color: #ccc;
+		text-align: center;
+	}
+	.inner {
+		border-left: 2px solid #333;
+		border-right: 2px solid #333;
+		background: #e1e1e1;
+		padding: 2em;
+		margin: 0 auto;
+		max-width: 950px;
+		min-width: 350px;
+	}
 
-/* Image Control */
-.image {
-	background: url(http://placekitten.com/800/500) center center no-repeat #666; 
-	background-size: cover; 
-	height: 300px; 
-	width: 300px; 
-	position: relative;
-}
-.img-control {
-	background: #999;
-	border: none;
-	color: #fff;
-	cursor: pointer;
-	display: block;
-	height: 48px;
-	width: 48px;
-	font-size: 35px;
-	line-height: 42px;
-	text-align: center;
-	overflow: hidden;
-	opacity: 0.8;
-	position: absolute;
-}
-.img-control:hover,
-.img-control:active {
-	opacity: 1.0;
-}
-.img-delete {
-	top: 0;
-	right: 0;
-}
-.img-rotate {
-	bottom: 8px;
-	left: 8px;
-}
-.img-crop {
-	bottom: 8px;
-	left: 68px;
-}
-/* Modal */
-.modal {
-	background: rgba(21, 21, 21, 0.85);
-	display: none;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	position: absolute;
-	text-align: center;
-	height: 101%;
-	width: 101%;
-	z-index: 100;
-}
-.modal-inner {
-	display: table-cell;
-	position: relative;
-	vertical-align: middle;
-}
-/* Crop Tool */
-.crop-border {
-	border: 1px solid #000;
-	background: #666;
-	margin: 0 auto;
-	position: relative;
-	height: 550px;
-	width: 800px;
-}
-.crop-btns {
-	background: #000;
-	color: #fff;
-	height: 50px;
-	font-weight: bold;
-	font-size: 1em;
-	position: absolute;
-	bottom: -50px;
-	left: 0;
-	width: 100%;
-}
-.crop-container {
-	height: 500px;
-	width: 800px;
-	position: relative;
-}
-.crop-btns button {
-	background: none;
-	border: none;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans;
-	font-size: 0.75em;
-	font-weight: bold;
-}
-button.cancel {
-	color: #fff;
-	display: inline;
-	float: left;
-	margin: 1em;
-}
-button.crop {
-	background: #e1e1e1;
-	border-radius: 3px;
-	height: 32px;
-	float: right;
-	margin: 0.5em 1em;
-	padding: 0 1em;
-}
-.original {
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-.crop-overlay,
-.crop-handle {
-	border: 1px solid #fff;
-	position: absolute;
-}
-.crop-overlay {
-	cursor: move;
-	height: 300px;
-	width: 300px;
-}
-.crop-handle {
-	background: #fff;
-	bottom: -6px;
-	font-size: 1px;
-	height: 11px;
-	opacity: 0.75
-	position: absolute;
-	width: 11px;
-}
-.crop-handle-nw {
-	cursor: nw-resize;
-	left: -11px;
-	top: -11px;
-}
-.crop-handle-n {
-	cursor: n-resize;
-	left: 50%;
-	margin-left: -5px;
-	top: -11px;
-}
-.crop-handle-ne {
-	cursor: ne-resize;
-	right: -11px;
-	top: -11px;
-}
-.crop-handle-se {
-	cursor: sw-resize;
-	bottom: -11px;
-	left: -11px;
-}
-.crop-handle-s {
-	cursor: s-resize;
-	bottom: -11px;
-	left: 50%;
-	margin-left: -5px;
-}
-.crop-handle-sw {
-	cursor: se-resize;
-	bottom: -11px;
-	right: -11px;
-}
-.crop-handle-e {
-	cursor: e-resize;
-	margin-top: -5px;
-	right: -11px;
-	top: 50%;
-}
-.crop-handle-w {
- cursor: w-resize;
- left: -11px;
- margin-top: -5px;
- top: 50%;
-}
+	/* Image Control */
+	.image {
+		background: url(http://placekitten.com/800/500) center center no-repeat #666; 
+		background-size: cover; 
+		height: 300px; 
+		width: 300px; 
+		position: relative;
+	}
+	.img-control {
+		background: #999;
+		border: none;
+		color: #fff;
+		cursor: pointer;
+		display: block;
+		height: 48px;
+		width: 48px;
+		font-size: 35px;
+		line-height: 42px;
+		text-align: center;
+		overflow: hidden;
+		opacity: 0.8;
+		position: absolute;
+	}
+	.img-control:hover,
+	.img-control:active {
+		opacity: 1.0;
+	}
+	.img-delete {
+		top: 0;
+		right: 0;
+	}
+	.img-rotate {
+		bottom: 8px;
+		left: 8px;
+	}
+	.img-crop {
+		bottom: 8px;
+		left: 68px;
+	}
+	/* Modal */
+	.modal {
+		background: rgba(21, 21, 21, 0.85);
+		display: none;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		position: absolute;
+		text-align: center;
+		height: 101%;
+		width: 101%;
+		z-index: 100;
+	}
+	.modal-inner {
+		display: table-cell;
+		position: relative;
+		vertical-align: middle;
+	}
+	/* Crop Tool */
+	.crop-border {
+		border: 1px solid #000;
+		background: #666;
+		margin: 0 auto;
+		position: relative;
+		height: 550px;
+		width: 800px;
+	}
+	.crop-btns {
+		background: #000;
+		color: #fff;
+		height: 50px;
+		font-weight: bold;
+		font-size: 1em;
+		position: absolute;
+		bottom: -50px;
+		left: 0;
+		width: 100%;
+	}
+	.crop-container {
+		height: 500px;
+		width: 800px;
+		position: relative;
+	}
+	.crop-btns button {
+		background: none;
+		border: none;
+		font-family: "Helvetica Neue", Helvetica, Arial, sans;
+		font-size: 0.75em;
+		font-weight: bold;
+	}
+	button.cancel {
+		color: #fff;
+		display: inline;
+		float: left;
+		margin: 1em;
+	}
+	button.crop {
+		background: #e1e1e1;
+		border-radius: 3px;
+		height: 32px;
+		float: right;
+		margin: 0.5em 1em;
+		padding: 0 1em;
+	}
+	.original {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.crop-overlay,
+	.crop-handle {
+		border: 1px solid #fff;
+		position: absolute;
+	}
+	.crop-overlay {
+		cursor: move;
+		height: 300px;
+		width: 300px;
+	}
+	.crop-handle {
+		background: #fff;
+		bottom: -6px;
+		font-size: 1px;
+		height: 11px;
+		opacity: 0.75
+		position: absolute;
+		width: 11px;
+	}
+	.crop-handle-nw {
+		cursor: nw-resize;
+		left: -11px;
+		top: -11px;
+	}
+	.crop-handle-n {
+		cursor: n-resize;
+		left: 50%;
+		margin-left: -5px;
+		top: -11px;
+	}
+	.crop-handle-ne {
+		cursor: ne-resize;
+		right: -11px;
+		top: -11px;
+	}
+	.crop-handle-se {
+		cursor: sw-resize;
+		bottom: -11px;
+		left: -11px;
+	}
+	.crop-handle-s {
+		cursor: s-resize;
+		bottom: -11px;
+		left: 50%;
+		margin-left: -5px;
+	}
+	.crop-handle-sw {
+		cursor: se-resize;
+		bottom: -11px;
+		right: -11px;
+	}
+	.crop-handle-e {
+		cursor: e-resize;
+		margin-top: -5px;
+		right: -11px;
+		top: 50%;
+	}
+	.crop-handle-w {
+	 cursor: w-resize;
+	 left: -11px;
+	 margin-top: -5px;
+	 top: 50%;
+	}
 </style>
 
 
@@ -273,65 +273,7 @@ button.crop {
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript">
-//<![CDATA[
-
-// You first declare a new DragResize() object, passing its own name 
-// and an object whose keys constitute optional parameters/settings:
-var ogImg = document.getElementById("original");
-var config = { 
-	minWidth: 300, 
-	minHeight: 300, 
-	minLeft: 0, 
-	minTop: 0, 
-	maxLeft: ((ogImg && ogImg.width) ? ogImg.width : 800), 
-	maxTop: ((ogImg && ogImg.height) ? ogImg.height : 500),
-	handles: ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
-};
-console.log("ogImg: "+ ogImg);
-console.log("ogImg.width: "+ ogImg.width);
-console.log("ogImg.height: "+ ogImg.height);
-
-var dragresize = new DragResize('crop-handle', config);
-
-// Optional settings/properties of the DragResize object are:
-//  enabled: Toggle whether the object is active.
-//  handles[]: An array of drag handles to use (see the .JS file).
-//  minWidth, minHeight: Minimum size to which elements are resized (in pixels).
-//  minLeft, maxLeft, minTop, maxTop: Bounding box (in pixels).
-
-// Next, you must define two functions, isElement and isHandle. These are passed
-// a given DOM element, and must "return true" if the element in question is a
-// draggable element or draggable handle. Here, I'm checking for the CSS classname
-// of the elements, but you have have any combination of conditions you like:
-
-dragresize.isElement = function(elm) {
- if (elm.className && elm.className.indexOf('crop-overlay') > -1) return true;
-};
-
-dragresize.isHandle = function(elm) {
- if (elm.className && elm.className.indexOf('crop-handle') > -1) return true;
-};
-
-// You can define optional functions that are called as elements are dragged/resized.
-// Some are passed true if the source event was a resize, or false if it's a drag.
-// The focus/blur events are called as handles are added/removed from an object,
-// and the others are called as users drag, move and release the object's handles.
-// You might use these to examine the properties of the DragResize object to sync
-// other page elements, etc.
-
-dragresize.ondragfocus = function() { };
-dragresize.ondragstart = function(isResize) { };
-dragresize.ondragmove = function(isResize) { };
-dragresize.ondragend = function(isResize) { };
-dragresize.ondragblur = function() { };
-
-// Finally, you must apply() your DragResize object to a DOM node; all children of this
-// node will then be made draggable. Here, I'm applying to the entire document.
-
-//]]>
-</script>
-
+		<script src="drag-resize.init.js" type="text/javascript"></script>
 	</div>
 
 	<script type="text/javascript">
@@ -388,14 +330,11 @@ dragresize.ondragblur = function() { };
 			// TODO: API
 			// sendCrop();
 			hideModal();
-			// console.log("cropObject: "+ cropObject);
 			console.dir(cropObject);
 		};
 
 		setAction("img-crop", "click", showModal);
 		setAction("cancel", "click", hideModal);
-		setAction("crop", "click", doCrop);
-		//setAction("se", "mousedown", resizeCropFrame);
 
 		var cropZone = document.getElementById("crop-zone");
 
