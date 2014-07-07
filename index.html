@@ -299,10 +299,10 @@
 
 		var escapeModal = function(e) {
 			e = e || window.event;
-			e.preventDefault();
 			var keycode = (typeof(e.which) == "number") ? e.which : e.keyCode;
 			// ESC or Backspace
 			if ((keycode === 27) || (keycode === 8)) {
+				e.preventDefault();
 				hideModal(submodal);
 			}
 		};
