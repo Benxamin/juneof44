@@ -1,0 +1,52 @@
+// You first declare a new DragResize() object, passing its own name 
+// and an object whose keys constitute optional parameters/settings:
+var ogImg = document.getElementById("original");
+var config = {
+    minWidth: 300,
+    minHeight: 300,
+    minLeft: 0,
+    minTop: 0,
+    maxLeft: ((ogImg && ogImg.width) ? ogImg.width : 800),
+    maxTop: ((ogImg && ogImg.height) ? ogImg.height : 500),
+    handles: ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
+};
+console.log("ogImg: "+ ogImg);
+console.log("ogImg.width: "+ ogImg.width);
+console.log("ogImg.height: "+ ogImg.height);
+
+var dragresize = new DragResize('crop-handle', config);
+
+// Optional settings/properties of the DragResize object are:
+//  enabled: Toggle whether the object is active.
+//  handles[]: An array of drag handles to use (see the .JS file).
+//  minWidth, minHeight: Minimum size to which elements are resized (in pixels).
+//  minLeft, maxLeft, minTop, maxTop: Bounding box (in pixels).
+
+// Next, you must define two functions, isElement and isHandle. These are passed
+// a given DOM element, and must "return true" if the element in question is a
+// draggable element or draggable handle. Here, I'm checking for the CSS classname
+// of the elements, but you have have any combination of conditions you like:
+
+dragresize.isElement = function(elm) {
+ if (elm.className && elm.className.indexOf('crop-overlay') > -1) return true;
+};
+
+dragresize.isHandle = function(elm) {
+ if (elm.className && elm.className.indexOf('crop-handle') > -1) return true;
+};
+
+// You can define optional functions that are called as elements are dragged/resized.
+// Some are passed true if the source event was a resize, or false if it's a drag.
+// The focus/blur events are called as handles are added/removed from an object,
+// and the others are called as users drag, move and release the object's handles.
+// You might use these to examine the properties of the DragResize object to sync
+// other page elements, etc.
+
+dragresize.ondragfocus = function() { };
+dragresize.ondragstart = function(isResize) { };
+dragresize.ondragmove = function(isResize) { };
+dragresize.ondragend = function(isResize) { };
+dragresize.ondragblur = function() { };
+
+// Finally, you must apply() your DragResize object to a DOM node; all children of this
+// node will then be made draggable. Here, I'm applying to the entire document.
