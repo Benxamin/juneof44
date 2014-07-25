@@ -6,13 +6,10 @@ var config = {
     minHeight: 300,
     minLeft: 0,
     minTop: 0,
-    maxLeft: ((ogImg && ogImg.width) ? ogImg.width : 800),
-    maxTop: ((ogImg && ogImg.height) ? ogImg.height : 500),
-    handles: ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
+    maxLeft: (ogImg && ogImg.width) ? ogImg.width : 800,
+    maxTop: (ogImg && ogImg.height) ? ogImg.height : 500,
+    handles: ['nw','se']
 };
-console.log("ogImg: "+ ogImg);
-console.log("ogImg.width: "+ ogImg.width);
-console.log("ogImg.height: "+ ogImg.height);
 
 var dragresize = new DragResize('crop-handle', config);
 
@@ -50,3 +47,5 @@ dragresize.ondragblur = function() { };
 
 // Finally, you must apply() your DragResize object to a DOM node; all children of this
 // node will then be made draggable. Here, I'm applying to the entire document.
+var cont = document.getElementById("crop-container");
+dragresize.apply(cont);

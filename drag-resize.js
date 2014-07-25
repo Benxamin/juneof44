@@ -52,7 +52,7 @@ function DragResize(myName, config) {
     var props = {
         myName: myName,
         enabled: true,
-        handles: ['tl', 'tm', 'tr', 'ml', 'mr', 'bl', 'bm', 'br'],
+        handles: ['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se'],
         isElement: null,
         isHandle: null,
         element: null,
@@ -81,6 +81,8 @@ function DragResize(myName, config) {
         ondragend: null,
         ondragblur: null
     };
+    props.regex = new RegExp(props.myName + '-(nw)?(se)?', 'g');
+
     for (var p in props) this[p] = (typeof config[p] == 'undefined') ? props[p] : config[p];
 }
 DragResize.prototype.apply = function(node) {
@@ -129,7 +131,8 @@ DragResize.prototype.mouseDown = function(e) {
         var elm = e.target || e.srcElement,
             newElement = null,
             newHandle = null,
-            hRE = new RegExp(myName + '-([trmbl]{2})', '');
+            // hRE = new RegExp(myName + '-([trmbl]{2})', '');
+            hRE = regex;
         while (elm) {
             if (elm.className) {
                 if (!newHandle && (hRE.test(elm.className) || isHandle(elm))) newHandle = elm;
@@ -161,6 +164,7 @@ DragResize.prototype.mouseMove = function(e) {
         lastMouseY = mouseY;
         if (!handle) return true;
         var isResize = false;
+console.log('this', this);
         if (this.resizeHandleDrag && this.resizeHandleDrag(diffX, diffY)) {
             isResize = true;
         } else {
@@ -196,7 +200,8 @@ DragResize.prototype.mouseMove = function(e) {
 DragResize.prototype.mouseUp = function(e) {
     with(this) {
         if (!document.getElementById || !enabled) return;
-        var hRE = new RegExp(myName + '-([trmbl]{2})', '');
+        // var hRE = new RegExp(myName + '-([trmbl]{2})', '');
+        var hRE = regex;
         if (handle && ondragend) this.ondragend(hRE.test(handle.className));
         deselect(false);
     }
@@ -217,11 +222,18 @@ DragResize.prototype.resizeHandleSet = function(elm, show) {
 };
 DragResize.prototype.resizeHandleDrag = function(diffX, diffY) {
     with(this) {
-        var hClass = handle && handle.className && handle.className.match(new RegExp(myName + '-([tmblr]{2})')) ? RegExp.$1 : '';
+        // var hClass = handle && handle.className && handle.className.match(new RegExp(myName + '-([tmblr]{2})')) ? RegExp.$1 : '';
+        if (handle && handle.className) {
+            var matches = regex.exec(handle.className);
+            if (matches) {
+                var hClass = matches[2];
+            } else { return; }
+        } else { return; }
+console.log('hClass', hClass);
         var dY = diffY,
             dX = diffX,
             processed = false;
-        if (hClass.indexOf('t') >= 0) {
+        if (hClass.indexOf('n') >= 0) {
             rs = 1;
             if (elmH - dY < minHeight) mOffY = (dY - (diffY = elmH - minHeight));
             else if (elmY + dY < minTop) mOffY = (dY - (diffY = minTop - elmY));
@@ -229,14 +241,14 @@ DragResize.prototype.resizeHandleDrag = function(diffX, diffY) {
             elmH -= diffY;
             processed = true;
         }
-        if (hClass.indexOf('b') >= 0) {
+        if (hClass.indexOf('s') >= 0) {
             rs = 1;
             if (elmH + dY < minHeight) mOffY = (dY - (diffY = minHeight - elmH));
             else if (elmY + elmH + dY > maxTop) mOffY = (dY - (diffY = maxTop - elmY - elmH));
             elmH += diffY;
             processed = true;
         }
-        if (hClass.indexOf('l') >= 0) {
+        if (hClass.indexOf('w') >= 0) {
             rs = 1;
             if (elmW - dX < minWidth) mOffX = (dX - (diffX = elmW - minWidth));
             else if (elmX + dX < minLeft) mOffX = (dX - (diffX = minLeft - elmX));
@@ -244,7 +256,7 @@ DragResize.prototype.resizeHandleDrag = function(diffX, diffY) {
             elmW -= diffX;
             processed = true;
         }
-        if (hClass.indexOf('r') >= 0) {
+        if (hClass.indexOf('e') >= 0) {
             rs = 1;
             if (elmW + dX < minWidth) mOffX = (dX - (diffX = minWidth - elmW));
             else if (elmX + elmW + dX > maxLeft) mOffX = (dX - (diffX = maxLeft - elmX - elmW));
