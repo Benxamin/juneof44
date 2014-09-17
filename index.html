@@ -158,9 +158,21 @@ button.crop {
 	position: absolute;
 }
 .overlay {
-	cursor: move;
+	min-height: 300px;
+	min-width: 300px;
 	height: 300px;
 	width: 300px;
+}
+.overlay.is-dragging {
+	background: rgba(255,255,255,0.15);
+}
+.dragger {
+	cursor: move;
+	min-height: 300px;
+	min-width: 300px;
+	height: auto;
+	width: auto;
+	position: absolute;
 }
 .handle {
 	background: #fff;
@@ -226,10 +238,11 @@ button.crop {
 						<button class="crop">Done Cropping</button>
 					</div>
 					<div class="overlay" id="crop-zone" draggable="true">
+						<div class="dragger"></div>
 						<div class="handle nw"></div>
-						<div class="handle ne"></div>
+						<!-- <div class="handle ne"></div> -->
 						<div class="handle se"></div>
-						<div class="handle sw"></div>
+						<!-- <div class="handle sw"></div> -->
 					</div>
 				</div>
 			</div>
@@ -299,7 +312,7 @@ button.crop {
 		setAction("se", "mousedown", resizeCropFrame);
 
 		var cropZone = document.getElementById("crop-zone");
-		var d = new Draggabilly(cropZone, { containment: "#crop-container"});
+		var d = new Draggabilly(cropZone, { containment: "#crop-container", handle: ".dragger"});
 		d.on("dragEnd", function(d, event, pointer) {
 			cropObject = {
 				"cropStartX": d.position.x,
