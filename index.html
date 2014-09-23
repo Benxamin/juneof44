@@ -401,12 +401,15 @@ button.crop {
       // Square aspect ratio.
       if (adjY < adjX) { adjY = adjX; }
       if (adjY > adjX) { adjX = adjY; }
+      console.log('adjX', adjX);
+      console.log('adjY', adjY);
 console.log('cropObject.cropStop:', cropObject.cropStopX+', '+cropObject.cropStopY);
       
-      // Calculate new dimensions.
+      // Calculate where user wants to go dimensions.
       var calcX = Math.round(cropObject.cropStopX + adjX);
       var calcY = Math.round(cropObject.cropStopY + adjY);
 console.log('new calc:', calcX +', '+calcY );
+
       // Prevent handle from moving cropper out of bounds.
       var minX = defaultWidth + 2;
       var minY = defaultHeight + 2;
@@ -414,7 +417,7 @@ console.log('new calc:', calcX +', '+calcY );
       if (calcY < minY) { calcY = minY; }
 
       var maxY = limit - cropZone.offsetTop - 2;
-      var maxX = limit - cropZone.offsetLeft - 2;
+      var maxX = cropBound - cropZone.offsetLeft - 2;
       if (calcY > maxY) { calcY = maxY; }
       if (calcX > maxX) { calcX = maxX; }
 console.log('limit calc:', calcX +', '+calcY );
