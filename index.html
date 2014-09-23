@@ -1,384 +1,387 @@
 <!doctype HTML>
 <html>
 <head>
-	<title>Cropper</title>
-	<script type="text/javascript" src="eventListener.polyfill.js"></script>
-	<script type="text/javascript" src="draggabilly.min.js"></script>
+  <title>Cropper</title>
+  <script type="text/javascript" src="eventListener.polyfill.js"></script>
+  <script type="text/javascript" src="draggabilly.min.js"></script>
 </head>
 <body>
 <style type="text/css">
 
 /* Page */
 body {
-	background-color: #666;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans;
-	margin: 0;
+  background-color: #666;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans;
+  margin: 0;
 }
 h1, h2, h3, h4, h5, h6, p, ul {
-	margin-top: 0;
+  margin-top: 0;
 }
 header {
-	background: #f1f1f1;
-	border-bottom: 2px solid #333;
+  background: #f1f1f1;
+  border-bottom: 2px solid #333;
 }
 header h1 {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 article {
 
 }
 footer {
-	background: #333;
-	border-top: 2px solid #333;
-	border-bottom: 2px solid #333;
-	color: #ccc;
-	text-align: center;
+  background: #333;
+  border-top: 2px solid #333;
+  border-bottom: 2px solid #333;
+  color: #ccc;
+  text-align: center;
 }
 .inner {
-	border-left: 2px solid #333;
-	border-right: 2px solid #333;
-	background: #e1e1e1;
-	padding: 2em;
-	margin: 0 auto;
-	max-width: 950px;
-	min-width: 350px;
+  border-left: 2px solid #333;
+  border-right: 2px solid #333;
+  background: #e1e1e1;
+  padding: 2em;
+  margin: 0 auto;
+  max-width: 950px;
+  min-width: 350px;
 }
 
 /* Image Control */
 .image {
-	background: url(http://placekitten.com/800/500) center center no-repeat #666; 
-	background-size: cover; 
-	height: 300px; 
-	width: 300px; 
-	position: relative;
+  background: url(http://placekitten.com/800/500) center center no-repeat #666;
+  background-size: cover;
+  height: 300px;
+  width: 300px;
+  position: relative;
 }
 .img-control {
-	background: #999;
-	border: none;
-	color: #fff;
-	cursor: pointer;
-	display: block;
-	height: 48px;
-	width: 48px;
-	font-size: 35px;
-	line-height: 42px;
-	text-align: center;
-	overflow: hidden;
-	opacity: 0.8;
-	position: absolute;
+  background: #999;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: block;
+  height: 48px;
+  width: 48px;
+  font-size: 35px;
+  line-height: 42px;
+  text-align: center;
+  overflow: hidden;
+  opacity: 0.8;
+  position: absolute;
 }
 .img-control:hover,
 .img-control:active {
-	opacity: 1.0;
+  opacity: 1.0;
 }
 .img-delete {
-	top: 0;
-	right: 0;
+  top: 0;
+  right: 0;
 }
 .img-rotate {
-	bottom: 8px;
-	left: 8px;
+  bottom: 8px;
+  left: 8px;
 }
 .img-crop {
-	bottom: 8px;
-	left: 68px;
+  bottom: 8px;
+  left: 68px;
 }
 /* Modal */
 .modal {
-	background: rgba(21, 21, 21, 0.85);
-	display: none;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	position: absolute;
-	text-align: center;
-	height: 101%;
-	width: 101%;
-	z-index: 100;
+  background: rgba(21, 21, 21, 0.85);
+  display: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  text-align: center;
+  height: 101%;
+  width: 101%;
+  z-index: 100;
 }
 .modal-inner {
-	display: table-cell;
-	position: relative;
-	vertical-align: middle;
+  display: table-cell;
+  position: relative;
+  vertical-align: middle;
 }
 /* Crop Tool */
 .crop-border {
-	border: 1px solid #000;
-	background: #666;
-	margin: 0 auto;
-	position: relative;
-	height: 550px;
-	width: 800px;
+  border: 1px solid #000;
+  background: #666;
+  margin: 0 auto;
+  position: relative;
+  height: 550px;
+  width: 800px;
 }
 .crop-btns {
-	background: #000;
-	color: #fff;
-	height: 50px;
-	font-weight: bold;
-	font-size: 1em;
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
+  background: #000;
+  color: #fff;
+  height: 50px;
+  font-weight: bold;
+  font-size: 1em;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 .crop-container {
-	height: 500px;
-	width: 800px;
+  height: 500px;
+  width: 800px;
 }
 .crop-btns button {
-	background: none;
-	border: none;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans;
-	font-size: 0.75em;
-	font-weight: bold;
+  background: none;
+  border: none;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans;
+  font-size: 0.75em;
+  font-weight: bold;
 }
 button.cancel {
-	color: #fff;
-	display: inline;
-	float: left;
-	margin: 1em;
+  color: #fff;
+  display: inline;
+  float: left;
+  margin: 1em;
 }
 button.crop {
-	background: #e1e1e1;
-	border-radius: 3px;
-	height: 32px;
-	float: right;
-	margin: 0.5em 1em;
-	padding: 0 1em;
+  background: #e1e1e1;
+  border-radius: 3px;
+  height: 32px;
+  float: right;
+  margin: 0.5em 1em;
+  padding: 0 1em;
 }
 .original {
-	position: absolute;
-	top: 0;
-	left: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 .overlay,
 .handle {
-	border: 1px solid #fff;
-	position: absolute;
+  border: 1px solid #fff;
+  position: absolute;
 }
 .overlay {
-	min-height: 300px;
-	min-width: 300px;
-	height: 300px;
-	width: 300px;
+  min-height: 300px;
+  min-width: 300px;
+  height: 300px;
+  width: 300px;
 }
 .overlay.is-dragging {
-	background: rgba(255,255,255,0.15);
-	border-style: dashed;
+  background: rgba(255,255,255,0.15);
+  border-style: dashed;
 }
 .dragger {
-	cursor: move;
-	min-height: 300px;
-	min-width: 300px;
-	height: 100%;
-	width: 100%;
-	position: absolute;
+  cursor: move;
+  min-height: 300px;
+  min-width: 300px;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
 .handle {
-	background: #fff;
-	position: absolute;
-	height: 11px;
-	width: 11px;
-	bottom: -6px;
-	opacity: 0.75
+  background: #fff;
+  position: absolute;
+  height: 11px;
+  width: 11px;
+  bottom: -6px;
+  opacity: 0.75
 }
 .overlay.is-dragging .handle, 
 .handle.is-dragging {
-	background: transparent;
-	opacity: 0.00;
+  background: transparent;
+  opacity: 0.00;
 }
 .handle.nw,
 .handle.ne {
-	top: -6px;
-	left: -6px;
+  top: -6px;
+  left: -6px;
 }
 .handle.ne {
-	left: auto;
-	right: -6px;
+  left: auto;
+  right: -6px;
 }
 .handle.sw,
 .handle.se {
-	left: -6px;
+  left: -6px;
 }
 .handle.se {
-	left: auto;
-	right: -6px;
+  left: auto;
+  right: -6px;
 }
 .handle.se,
 .handle.nw {
-	cursor: nwse-resize;
+  cursor: nwse-resize;
 }
  .handle.ne,
  .handle.sw {
- 	cursor: nesw-resize;
+  cursor: nesw-resize;
 }
 </style>
-	<header aria-role="header">
-		<div class="inner">
-			<h1>Cropper</h1>
-		</div>
-	</header>
-	<article aria-role="main">
-		<div class="inner">
-			<h4>Cropper</h4>
-			<div class="image">
-				<button class="img-control img-delete" title="Delete this image">&times;</button>
-				<button class="img-control img-rotate" title="Rotate this image 90º clockwise">↱</button>
-				<button class="img-control img-crop" title="Crop this image">&#164;</button>
-			</div>
-		</div>	
-	</article>
-	<footer aria-role="footer">
-		<div class="inner">
-			<h6>&copy; 2014 The Berts Master</h6>
-		</div>
-	</footer>
-	<div class="modal" id="cropModal">
-		<div class="modal-inner">
-			<div class="crop-border">
-				<div class="crop-container" id="crop-container">
-					<img class="original" src="http://placekitten.com/800/500" title="Cropping...">
-					<div class="crop-btns">
-						<button class="cancel">Cancel</button>
-						<button class="crop">Done Cropping</button>
-					</div>
-					<div class="overlay" id="crop-zone" draggable="true">
-						<div class="dragger"></div>
-						<div class="handle nw" id="nw-handle"></div>
-						<div class="handle se" id="se-handle"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <header aria-role="header">
+    <div class="inner">
+      <h1>Cropper</h1>
+    </div>
+  </header>
+  <article aria-role="main">
+    <div class="inner">
+      <h4>Cropper</h4>
+      <div class="image">
+        <button class="img-control img-delete" title="Delete this image">&times;</button>
+        <button class="img-control img-rotate" title="Rotate this image 90º clockwise">↱</button>
+        <button class="img-control img-crop" title="Crop this image">&#164;</button>
+      </div>
+    </div>
+  </article>
+  <footer aria-role="footer">
+    <div class="inner">
+      <h6>&copy; 2014 The Berts Master</h6>
+    </div>
+  </footer>
+  <div class="modal" id="cropModal">
+    <div class="modal-inner">
+      <div class="crop-border">
+        <div class="crop-container" id="crop-container">
+          <img class="original" src="http://placekitten.com/800/500" title="Cropping...">
+          <div class="crop-btns">
+            <button class="cancel">Cancel</button>
+            <button class="crop">Done Cropping</button>
+          </div>
+          <div class="overlay" id="crop-zone" draggable="true">
+            <div class="dragger"></div>
+            <div class="handle nw" id="nw-handle"></div>
+            <div class="handle se" id="se-handle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	<script type="text/javascript">
-	console.clear();
-		var submodal =  document.getElementById("cropModal");
-		if (!submodal) {
-			throw new Error("No element 'submodal'");
-		}
-		var dragging = false;
-		var cropObject = {};
-		var cropZone = document.getElementById("crop-zone");
-		var cropBound= document.getElementById("crop-container");
-		var nwH = document.getElementById("nw-handle");
-		var seH = document.getElementById("se-handle");
+  <script type="text/javascript">
+  console.clear();
+    var submodal =  document.getElementById("cropModal");
+    if (!submodal) {
+      throw new Error("No element 'submodal'");
+    }
+    var dragging = false;
+    var cropObject = {};
+    var cropZone = document.getElementById("crop-zone");
+    var cropBound= document.getElementById("crop-container");
+    var nwH = document.getElementById("nw-handle");
+    var seH = document.getElementById("se-handle");
 
-		// Sane defaults.
-		var defaultHeight = 300;
-		var defaultWidth = 300;
-		var zoneH = cropZone.offsetHeight || defaultHeight;
-		var zoneW = cropZone.offsetWidth || defaultWidth;
+    // Sane defaults.
+    var defaultHeight = 300;
+    var defaultWidth = 300;
+    var zoneH = cropZone.offsetHeight || defaultHeight;
+    var zoneW = cropZone.offsetWidth || defaultWidth;
 
-		if (!cropZone.style.top) cropZone.style.top = "0px";
-		if (!cropZone.style.left) cropZone.style.left = "0px";
+    if (!cropZone.style.top) cropZone.style.top = "0px";
+    if (!cropZone.style.left) cropZone.style.left = "0px";
 
 
-		var defView = document.defaultView;
+    var defView = document.defaultView;
 
-		var getStyle = defView && defView.getComputedStyle ?
-		  function( elem ) {
-		    return defView.getComputedStyle( elem, null );
-		  } :
-		  function( elem ) {
-		    return elem.currentStyle;
-		  };
+    var getStyle = defView && defView.getComputedStyle ?
+      function( elem ) {
+        return defView.getComputedStyle( elem, null );
+      } :
+      function( elem ) {
+        return elem.currentStyle;
+      };
 
-		var setAction = function(className, eventName, handler) {
-			var ctls = document.getElementsByClassName(className);
-			if (ctls && ctls.length) {
-				var i = 0;
-				for(i; i < ctls.length; i += 1) {
-					if (ctls[i].addEventListener) {
-					  ctls[i].addEventListener(eventName, handler, false);
-					} else if (ctls[i].attachEvent) {
-					  el.attachEvent('on'+ eventName, handler);
-					}
-				}
-			}
-		};
+    var setAction = function(className, eventName, handler) {
+      var ctls = document.getElementsByClassName(className);
+      if (ctls && ctls.length) {
+        var i = 0;
+        for(i; i < ctls.length; i += 1) {
+          if (ctls[i].addEventListener) {
+            ctls[i].addEventListener(eventName, handler, false);
+          } else if (ctls[i].attachEvent) {
+            el.attachEvent('on'+ eventName, handler);
+          }
+        }
+      }
+    };
 
-		var removeAction = function(element, eventName, handler) {
-			eventName = 'on' + eventName;
-			if (element.removeEventListener) {
-				element.removeEventListener(eventName, handler, false);
-			} else if (element.detachEvent) {
-				element.detachEvent(eventName, handler);
-			}
-		};
+    var removeAction = function(element, eventName, handler) {
+      eventName = 'on' + eventName;
+      if (element.removeEventListener) {
+        element.removeEventListener(eventName, handler, false);
+      } else if (element.detachEvent) {
+        element.detachEvent(eventName, handler);
+      }
+    };
 
-		var showModal = function() {
-			submodal.setAttribute("style", "display:table;");
-			submodal.className += ' show';
-			if(document.addEventListener) {
-				return document.addEventListener("keydown", escapeModal, false);
-			}
-			document.attachEvent("keydown", escapeModal);
-		};
+    var showModal = function() {
+      submodal.setAttribute("style", "display:table;");
+      submodal.className += ' show';
+      if(document.addEventListener) {
+        return document.addEventListener("keydown", escapeModal, false);
+      }
+      document.attachEvent("keydown", escapeModal);
+    };
 
-		var hideModal = function() {
-			if (submodal.className.indexOf("show") > -1) {
-				submodal.setAttribute("style", "display:none;");
-				submodal.className = submodal.className.replace(/\bshow\b/,'');
-				if(document.removeEventListener) {
-					return document.removeEventListener("keydown", escapeModal, false);
-				}
-				document.detachEvent("keydown", escapeModal);
-			}
-		};
+    var hideModal = function() {
+      if (submodal.className.indexOf("show") > -1) {
+        submodal.setAttribute("style", "display:none;");
+        submodal.className = submodal.className.replace(/\bshow\b/,'');
+        if(document.removeEventListener) {
+          return document.removeEventListener("keydown", escapeModal, false);
+        }
+        document.detachEvent("keydown", escapeModal);
+      }
+    };
 
-		var escapeModal = function(e) {
-			e = e || window.event;
-			var keycode = (typeof(e.which) == "number") ? e.which : e.keyCode;
-			if (keycode === 27) {
-				hideModal(submodal);
-			}
-			// Reset the cropZone.
-			cropZone.style.top = "0px";
-			cropZone.style.left = "0px";
-			cropZone.style.height = "300px";
-			cropZone.style.width = "300px";
-			cropZone.style.borderStyle = "";
-		};
+    var escapeModal = function(e) {
+      e = e || window.event;
+      var keycode = (typeof(e.which) == "number") ? e.which : e.keyCode;
+      if (keycode === 27) {
+        hideModal(submodal);
+      }
+      // Reset the cropZone.
+      cropZone.style.top = "0px";
+      cropZone.style.left = "0px";
+      cropZone.style.height = "300px";
+      cropZone.style.width = "300px";
+      cropZone.style.borderStyle = "";
+    };
 
-		var roundCoord = function(num, defaultNum) {
-			if (num) {
-				if (num < 1) return 0;
-				return Math.round(num);
-			}
-			return defaultNum;
-		};
+    var roundCoord = function(num, defaultNum) {
+      if (num) {
+        if (num < 1) return 0;
+        return Math.round(num);
+      }
+      return defaultNum;
+    };
 
-		var setCoords = function (startX, startY, endX, endY) {
-			cropObject.cropStartX = roundCoord(startX, 0);
-			cropObject.cropStartY = roundCoord(startY, 0);
-			cropObject.cropStopX = roundCoord(endX, defaultWidth);
-			cropObject.cropStopY = roundCoord(endY, defaultHeight);
-			console.log('coord set! ', cropObject);
-		};
+    var setCoords = function (startX, startY, endX, endY) {
+      cropObject.cropStartX = roundCoord(startX, 0);
+      cropObject.cropStartY = roundCoord(startY, 0);
+      cropObject.cropStopX = roundCoord(endX, defaultWidth);
+      cropObject.cropStopY = roundCoord(endY, defaultHeight);
+      console.log('coord set! ', cropObject);
+    };
 
-		var doCrop = function(coords) {
-			console.log('doCrop coords:', coords);
-			// TODO: build GET request for API
-			// TODO: call API
-			// Handle response async.
-			hideModal();
-			console.log("Done!");
-		};
+    var doCrop = function(coords) {
+      console.log('doCrop coords:', coords);
+      // TODO: build GET request for API
+      // TODO: call API
+      // Handle response async.
+      hideModal();
+      console.log("Done!");
+    };
 
-		setAction("img-crop", "click", showModal);
-		setAction("cancel", "click", hideModal);
-		setAction("crop", "click", doCrop);
+    var dashBorder = function() {
+      cropZone.savedBorder = getStyle(cropZone).borderStyle;
+      cropZone.style.borderStyle = "dashed";
+    };
+
+    setAction("img-crop", "click", showModal);
+    setAction("cancel", "click", hideModal);
+    setAction("crop", "click", doCrop);
     setCoords();
-		
-		var seh = new Draggabilly(seH, { containment: "#crop-container"});
-		seh.on("dragStart", function(instance, event, pointer) {
-			cropZone.savedBorder = getStyle(cropZone).borderStyle;
-			cropZone.style.borderStyle = "dashed";
-		});
-		seh.on("dragMove", function(instance, event, pointer) {
+
+    var seh = new Draggabilly(seH, { containment: "#crop-container"});
+    seh.on("dragStart", dashBorder);
+
+    seh.on("dragMove", function(instance, event, pointer) {
       var adjX = instance.position.x - instance.startPosition.x;
       var adjY = instance.position.y - instance.startPosition.y;
 
@@ -405,69 +408,66 @@ button.crop {
       cropZone.style.height = calcY + 'px';
       cropZone.style.width = calcX + 'px';      
     });
-		seh.on("dragEnd", function(instance, event, pointer) {
-			// Update crop dimensions.
-			setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
-
-			// Update UI.
-			var handleX = cropZone.offsetWidth - 8;
-			var handleY = cropZone.offsetHeight - 8;
-			if (instance.position.x != handleX) { instance.position.x = handleX; seh.element.style.left = handleX+"px"; }
-			if (instance.position.y != handleY) { instance.position.y = handleY; seh.element.style.top = handleY+"px"; }
-			cropZone.style.borderStyle = cropZone.savedBorder;
-		});
-
-		var nwh = new Draggabilly(nwH, { containment: "#crop-container"});
-		nwh.isEnabled = false; // Enable after relocating the cropZone.
-		nwh.on("dragStart", function(instance, event, pointer) {
-			cropZone.savedBorder = getStyle(cropZone).borderStyle;
-			cropZone.style.borderStyle = "dashed";
-		});
-		nwh.on("dragMove", function(instance, event, pointer) {
-			var adjX = instance.position.x - instance.startPosition.x;
-			var adjY = instance.position.y - instance.startPosition.y;
-
-			// Square aspect ratio.
-			if (adjY > adjX) { adjX = adjY; }
-			if (adjY < adjX) { adjY = adjX; }
-
-			// Calculate new dimensions.
-			var calcY = Math.round(cropObject.cropStartY + adjY);
-			var calcX = Math.round(cropObject.cropStartX + adjX);
-			
-			// Prevent handle from moving cropper out of bounds.
-			var maxY = cropBound.offsetHeight - defaultHeight - 2; // 2px borders...
-			var maxX = cropBound.offsetWidth - defaultWidth - 2;
-			if (calcX > maxX) { calcX = maxX; }
-			if (calcY > maxY) { calcY = maxY; }
-
-			// Apply new dimenstions.
-			cropZone.style.top = calcY + 'px';
-			cropZone.style.left = calcX + 'px';
-			cropZone.style.height = Math.round(cropObject.cropStopY - cropObject.cropStartY - adjY) + 'px';
-			cropZone.style.width = Math.round(cropObject.cropStopX - cropObject.cropStartX - adjX) + 'px';
-		});
-		nwh.on("dragEnd", function(instance, event, pointer) {
+    seh.on("dragEnd", function(instance, event, pointer) {
       // Update crop dimensions.
-			setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
-			// Update UI.
-			if (instance.position.x != -5) { instance.position.x = -5; instance.element.style.left = "-5px"; }
-			if (instance.position.y != -5) { instance.position.y = -5; instance.element.style.top = "-5px"; }
-			cropZone.style.borderStyle = cropZone.savedBorder;
-		});
+      setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
 
-		var d = new Draggabilly(cropZone, { containment: "#crop-container", handle: ".dragger"});
-		d.on("dragStart", function(instance, event, pointer) {
-			nwh.isEnabled = seh.isEnabled = false; // Disable resize handles.
-			cropZone.style.borderStyle = "dashed";
-		});
-		d.on("dragEnd", function(d, event, pointer) {
-			setCoords(d.position.x, d.position.y, (d.position.x + d.size.innerWidth), (d.position.y + d.size.innerHeight));
-			cropZone.style.borderStyle = "";
-			nwh.isEnabled = seh.isEnabled = true; // Enable resize handles.
-		});
+      // Update UI.
+      var handleX = cropZone.offsetWidth - 8;
+      var handleY = cropZone.offsetHeight - 8;
+      if (instance.position.x != handleX) { instance.position.x = handleX; seh.element.style.left = handleX+"px"; }
+      if (instance.position.y != handleY) { instance.position.y = handleY; seh.element.style.top = handleY+"px"; }
+      cropZone.style.borderStyle = cropZone.savedBorder;
+    });
+
+    var nwh = new Draggabilly(nwH, { containment: "#crop-container"});
+    nwh.isEnabled = false; // Enable after relocating the cropZone.
+    nwh.on("dragStart", dashBorder);
+    nwh.on("dragMove", function(instance, event, pointer) {
+      var adjX = instance.position.x - instance.startPosition.x;
+      var adjY = instance.position.y - instance.startPosition.y;
+
+      // Square aspect ratio.
+      if (adjY > adjX) { adjX = adjY; }
+      if (adjY < adjX) { adjY = adjX; }
+
+      // Calculate new dimensions.
+      var calcY = Math.round(cropObject.cropStartY + adjY);
+      var calcX = Math.round(cropObject.cropStartX + adjX);
+
+      // Prevent handle from moving cropper out of bounds.
+      var maxY = cropBound.offsetHeight - defaultHeight - 2; // 2px borders...
+      var maxX = cropBound.offsetWidth - defaultWidth - 2;
+      if (calcX > maxX) { calcX = maxX; }
+      if (calcY > maxY) { calcY = maxY; }
+
+      // Apply new dimenstions.
+      cropZone.style.top = calcY + 'px';
+      cropZone.style.left = calcX + 'px';
+      cropZone.style.height = Math.round(cropObject.cropStopY - cropObject.cropStartY - adjY) + 'px';
+      cropZone.style.width = Math.round(cropObject.cropStopX - cropObject.cropStartX - adjX) + 'px';
+    });
+    nwh.on("dragEnd", function(instance, event, pointer) {
+          // Update crop dimensions.
+      setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
+      // Update UI.
+      if (instance.position.x != -5) { instance.position.x = -5; instance.element.style.left = "-5px"; }
+      if (instance.position.y != -5) { instance.position.y = -5; instance.element.style.top = "-5px"; }
+      cropZone.style.borderStyle = cropZone.savedBorder;
+    });
+
+    var d = new Draggabilly(cropZone, { containment: "#crop-container", handle: ".dragger"});
+    d.on("dragStart", function() {
+      nwh.isEnabled = seh.isEnabled = false; // Disable resize handles.
+      cropZone.style.borderStyle = "dashed";
+    });
+    d.on("dragEnd", function(d, event, pointer) {
+      setCoords(d.position.x, d.position.y, (d.position.x + d.size.innerWidth), (d.position.y + d.size.innerHeight));
+      cropZone.style.borderStyle = "";
+      nwh.isEnabled = seh.isEnabled = true; // Enable resize handles.
+    });
 
 
-	</script>
+  </script>
 </body>
 </html>
