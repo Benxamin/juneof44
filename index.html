@@ -382,10 +382,6 @@ button.crop {
       var adjX = instance.position.x - instance.startPosition.x;
       var adjY = instance.position.y - instance.startPosition.y;
 
-      // Square aspect ratio.
-      if (adjY > adjX) { adjX = adjY; }
-      if (adjY < adjX) { adjY = adjX; }
-
       // Calculate new dimensions.
       var calcY = Math.round(cropObject.cropStopY + adjY);
       var calcX = Math.round(cropObject.cropStopX + adjX);
@@ -401,13 +397,17 @@ button.crop {
       if (calcY > maxY) { calcY = maxY; }
       if (calcX > maxX) { calcX = maxX; }
 
+      // Square aspect ratio.
+      if (calcY < calcX) { calcY = calcX; }
+      if (calcX < calcY) { calcX = calcY; }
+
       // Apply new dimenstions.
       cropZone.style.height = calcY + 'px';
       cropZone.style.width = calcX + 'px';      
     });
 		seh.on("dragEnd", function(instance, event, pointer) {
-			// console.log('cropZone', cropZone);
-			// setCoords(d.position.x, d.position.y, (d.position.x + d.size.innerWidth), (d.position.y + d.size.innerHeight));
+			// Update crop dimensions.
+			setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
 
 			// Update UI.
 			var handleX = cropZone.offsetWidth - 8;
@@ -444,13 +444,12 @@ button.crop {
 			// Apply new dimenstions.
 			cropZone.style.top = calcY + 'px';
 			cropZone.style.left = calcX + 'px';
-			cropZone.style.height = Math.round(defaultHeight - adjY) + 'px';
-			cropZone.style.width = Math.round(defaultWidth - adjX) + 'px';
+			cropZone.style.height = Math.round(cropObject.cropStopY - cropObject.cropStartY - adjY) + 'px';
+			cropZone.style.width = Math.round(cropObject.cropStopX - cropObject.cropStartX - adjX) + 'px';
 		});
 		nwh.on("dragEnd", function(instance, event, pointer) {
-			console.log('cropZone', cropZone);
-			setCoords(d.position.x, d.position.y, (d.position.x + d.size.innerWidth), (d.position.y + d.size.innerHeight));
-
+      // Update crop dimensions.
+			setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
 			// Update UI.
 			if (instance.position.x != -5) { instance.position.x = -5; instance.element.style.left = "-5px"; }
 			if (instance.position.y != -5) { instance.position.y = -5; instance.element.style.top = "-5px"; }
