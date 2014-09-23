@@ -273,6 +273,9 @@ button.crop {
     var defaultWidth = 300;
     var zoneH = cropZone.offsetHeight || defaultHeight;
     var zoneW = cropZone.offsetWidth || defaultWidth;
+    var zoneT = cropZone.offsetTop || 0;
+    var zoneL = cropZone.offsetLeft || 0;
+
     var limit = defaultHeight;
     var orientation = {};
 
@@ -401,20 +404,19 @@ button.crop {
 
     // Instantiate the southeast handle.
     var seh = new Draggabilly(seH, { containment: "#crop-container"});
-    
+
     seh.on("dragStart", dashBorder);
     seh.on("dragMove", function(instance, event, pointer) {
-      var adjX = instance.position.x - instance.startPosition.x;
-      var adjY = instance.position.y - instance.startPosition.y;
-
-      // Square cropper aspect ratio: make the smaller equal to the larger.
-      if (adjY < adjX) { adjY = adjX; }
-      if (adjY > adjX) { adjX = adjY; }
-console.log('\nadj:', adjX+', '+adjY);
+console.log('instance.position.x', instance.position.x+', '+instance.position.y);
+console.log('instance.startPosition', instance.startPosition.x+', '+instance.startPosition.y);
+      var adjX = Math.round(instance.position.x - instance.startPosition.x);
+      var adjY = Math.round(instance.position.y - instance.startPosition.y);
+console.log('\n adj:', adjX+', '+adjY);
+console.log('sqdj:', adjX+', '+adjY);
 
       // Calculate where user wants to go dimensions.
-      var calcX = Math.round(cropObject.cropStopX + adjX);
-      var calcY = Math.round(cropObject.cropStopY + adjY);
+      var calcX = cropObject.cropStopX + adjX;
+      var calcY = cropObject.cropStopY + adjY;
 console.log('user:', calcX +', '+calcY );
 
       // Prevent handle from moving cropper out of bounds.
@@ -426,15 +428,24 @@ console.log('minc:', calcX +', '+calcY );
 
       var maxY = limit - cropZone.offsetTop - 2;
       var maxX = cropBound.offsetWidth - cropZone.offsetLeft - 2;
+
 console.log(' max:', maxX +', '+maxY);      
       if (calcY > maxY) { calcY = maxY; }
       if (calcX > maxX) { calcX = maxX; }
 console.log('maxc:', calcX +', '+calcY );
+
+      if ((calcX != calcY) && orientation.h) {
+        calcX = calcY;
+      }
+      if ((calcX != calcY) && orientation.v) {
+        calcY = calcX;
+      }
+
       // Apply new dimenstions.
       cropZone.style.height = calcY + 'px';
       cropZone.style.width = calcX + 'px';      
     });
-    seh.on("dragEnd", function(instance, event, pointer) {
+    seh.on("dragEnd", function() {
       // Update crop dimensions.
       setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
       // Update UI.
@@ -442,9 +453,14 @@ console.log('maxc:', calcX +', '+calcY );
       cropZone.style.borderStyle = cropZone.savedBorder;
     });
 
+    // Instantiate the northwest handle.
     var nwh = new Draggabilly(nwH, { containment: "#crop-container"});
     nwh.isEnabled = false; // Enable after relocating the cropZone.
-    nwh.on("dragStart", dashBorder);
+    nwh.on("dragStart", function() {
+      dashBorder();
+      zoneT = cropZone.offsetTop;
+      zoneL = cropZone.offsetLeft;
+    });
     nwh.on("dragMove", function(instance, event, pointer) {
       var adjX = instance.position.x - instance.startPosition.x;
       var adjY = instance.position.y - instance.startPosition.y;
@@ -457,20 +473,31 @@ console.log('maxc:', calcX +', '+calcY );
       var calcY = Math.round(cropObject.cropStartY + adjY);
       var calcX = Math.round(cropObject.cropStartX + adjX);
 
+      // Prevent from squashing zone.
+      if (calcY > zoneT) {
+        calcY = zoneT;
+      }
+      if (calcX > zoneL) {
+        calcX = zoneL;
+      }
+
       // Prevent handle from moving cropper out of bounds.
       var maxY = cropBound.offsetHeight - defaultHeight - 2; // 2px borders...
       var maxX = cropBound.offsetWidth - defaultWidth - 2;
       if (calcX > maxX) { calcX = maxX; }
       if (calcY > maxY) { calcY = maxY; }
 
+      var zoneY = Math.round(cropObject.cropStopY - cropObject.cropStartY - adjY);
+      var zoneX = Math.round(cropObject.cropStopX - cropObject.cropStartX - adjX);
+
       // Apply new dimenstions.
       cropZone.style.top = calcY + 'px';
       cropZone.style.left = calcX + 'px';
-      cropZone.style.height = Math.round(cropObject.cropStopY - cropObject.cropStartY - adjY) + 'px';
-      cropZone.style.width = Math.round(cropObject.cropStopX - cropObject.cropStartX - adjX) + 'px';
+      cropZone.style.height = zoneY + 'px';
+      cropZone.style.width = zoneX + 'px';
     });
     nwh.on("dragEnd", function(instance, event, pointer) {
-          // Update crop dimensions.
+      // Update crop dimensions.
       setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
       // Update UI.
       resetHandlePositions(handleClass);
@@ -484,6 +511,7 @@ console.log('maxc:', calcX +', '+calcY );
     });
     d.on("dragEnd", function(d, event, pointer) {
       setCoords(d.position.x, d.position.y, (d.position.x + d.size.innerWidth), (d.position.y + d.size.innerHeight));
+      resetHandlePositions(handleClass);
       cropZone.style.borderStyle = "";
       nwh.isEnabled = seh.isEnabled = true; // Enable resize handles.
     });
