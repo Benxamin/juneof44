@@ -265,26 +265,23 @@ button.crop {
     var cropBound= document.getElementById("crop-container");
     var nwH = document.getElementById("nw-handle");
     var seH = document.getElementById("se-handle");
+    var handleClass = "handle";
 
     // Sane defaults.
+    var defaultTop = 0;
+    var defaultLeft = 0;
     var defaultHeight = 300;
     var defaultWidth = 300;
     var zoneH = cropZone.offsetHeight || defaultHeight;
     var zoneW = cropZone.offsetWidth || defaultWidth;
 
-    if (!cropZone.style.top) cropZone.style.top = "0px";
-    if (!cropZone.style.left) cropZone.style.left = "0px";
-
+    if (!cropZone.style.top) cropZone.style.top = defaultTop + "px";
+    if (!cropZone.style.left) cropZone.style.left = defaultLeft + "px";
 
     var defView = document.defaultView;
-
-    var getStyle = defView && defView.getComputedStyle ?
-      function( elem ) {
-        return defView.getComputedStyle( elem, null );
-      } :
-      function( elem ) {
-        return elem.currentStyle;
-      };
+    var getStyle = (defView && defView.getComputedStyle)
+                   ? function(elem) { return defView.getComputedStyle(elem, null); } 
+                   : function(elem) { return elem.currentStyle; };
 
     var setAction = function(className, eventName, handler) {
       var ctls = document.getElementsByClassName(className);
@@ -341,21 +338,21 @@ button.crop {
       cropZone.style.height = "300px";
       cropZone.style.width = "300px";
       cropZone.style.borderStyle = "";
+      resetHandlePositions(handleClass);
     };
 
-    var roundCoord = function(num, defaultNum) {
-      if (num) {
+    var roundCoord = function(num) {
+      if (num && typeof num === "number") {
         if (num < 1) return 0;
         return Math.round(num);
       }
-      return defaultNum;
     };
 
     var setCoords = function (startX, startY, endX, endY) {
-      cropObject.cropStartX = roundCoord(startX, 0);
-      cropObject.cropStartY = roundCoord(startY, 0);
-      cropObject.cropStopX = roundCoord(endX, defaultWidth);
-      cropObject.cropStopY = roundCoord(endY, defaultHeight);
+      cropObject.cropStartX = startX ? roundCoord(startX) : 0;
+      cropObject.cropStartY = startY ? roundCoord(startY) : 0;
+      cropObject.cropStopX = endX ? roundCoord(endX) : defaultWidth;
+      cropObject.cropStopY = endY ? roundCoord(endY) : defaultHeight;
       console.log('coord set! ', cropObject);
     };
 
@@ -373,37 +370,46 @@ button.crop {
       cropZone.style.borderStyle = "dashed";
     };
 
+    var resetHandlePositions = function (className) {
+      var handles = document.getElementsByClassName(className);
+      for (var i = 0; i < handles.length; i += 1) {
+        handles[i].style.top = "";
+        handles[i].style.left = "";
+      }
+    };
+
     setAction("img-crop", "click", showModal);
     setAction("cancel", "click", hideModal);
     setAction("crop", "click", doCrop);
     setCoords();
 
     var seh = new Draggabilly(seH, { containment: "#crop-container"});
-    seh.on("dragStart", dashBorder);
 
+    seh.on("dragStart", dashBorder);
     seh.on("dragMove", function(instance, event, pointer) {
       var adjX = instance.position.x - instance.startPosition.x;
       var adjY = instance.position.y - instance.startPosition.y;
-
-      // Calculate new dimensions.
-      var calcY = Math.round(cropObject.cropStopY + adjY);
-      var calcX = Math.round(cropObject.cropStopX + adjX);
-
-      // Prevent handle from moving cropper out of bounds.
-      var minY = defaultHeight - 2; // 2px borders...
-      var minX = defaultWidth - 2;
-      if (calcY < minY) { calcY = minY; }
-      if (calcX < minX) { calcX = minX; }
-
-      var maxY = cropBound.offsetHeight - 2;
-      var maxX = cropBound.offsetWidth - 2;
-      if (calcY > maxY) { calcY = maxY; }
-      if (calcX > maxX) { calcX = maxX; }
+console.log('adj', adjX+', '+adjY);
 
       // Square aspect ratio.
-      if (calcY < calcX) { calcY = calcX; }
-      if (calcX < calcY) { calcX = calcY; }
+      if (adjY < adjX) { adjY = adjX; }
+      if (adjY > adjX) { adjX = adjY; }
 
+      // Calculate new dimensions.
+      var calcX = Math.round(cropObject.cropStopX + adjX);
+      var calcY = Math.round(cropObject.cropStopY + adjY);
+
+      // Prevent handle from moving cropper out of bounds.
+      var minX = defaultWidth + 2;
+      var minY = defaultHeight + 2;
+      if (calcX < minX) { calcX = minX; }
+      if (calcY < minY) { calcY = minY; }
+
+      var maxX = cropBound.offsetWidth;
+      var maxY = cropBound.offsetHeight;
+      if (calcY > maxY) { calcY = maxY; }
+      if (calcX > maxX) { calcX = maxX; }
+      console.log('calc:', calcX +', '+calcY );
       // Apply new dimenstions.
       cropZone.style.height = calcY + 'px';
       cropZone.style.width = calcX + 'px';      
@@ -411,12 +417,8 @@ button.crop {
     seh.on("dragEnd", function(instance, event, pointer) {
       // Update crop dimensions.
       setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
-
       // Update UI.
-      var handleX = cropZone.offsetWidth - 8;
-      var handleY = cropZone.offsetHeight - 8;
-      if (instance.position.x != handleX) { instance.position.x = handleX; seh.element.style.left = handleX+"px"; }
-      if (instance.position.y != handleY) { instance.position.y = handleY; seh.element.style.top = handleY+"px"; }
+      resetHandlePositions(handleClass);
       cropZone.style.borderStyle = cropZone.savedBorder;
     });
 
@@ -451,8 +453,7 @@ button.crop {
           // Update crop dimensions.
       setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
       // Update UI.
-      if (instance.position.x != -5) { instance.position.x = -5; instance.element.style.left = "-5px"; }
-      if (instance.position.y != -5) { instance.position.y = -5; instance.element.style.top = "-5px"; }
+      resetHandlePositions(handleClass);
       cropZone.style.borderStyle = cropZone.savedBorder;
     });
 
