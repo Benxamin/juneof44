@@ -325,6 +325,15 @@ button.crop {
       if (submodal.className.indexOf("show") > -1) {
         submodal.setAttribute("style", "display:none;");
         submodal.className = submodal.className.replace(/\bshow\b/,'');
+
+        // Reset the cropZone.
+        cropZone.style.top = "0px";
+        cropZone.style.left = "0px";
+        cropZone.style.height = "300px";
+        cropZone.style.width = "300px";
+        cropZone.style.borderStyle = "";
+        resetHandlePositions(handleClass);
+
         if(document.removeEventListener) {
           return document.removeEventListener("keydown", escapeModal, false);
         }
@@ -338,13 +347,6 @@ button.crop {
       if (keycode === 27) {
         hideModal(submodal);
       }
-      // Reset the cropZone.
-      cropZone.style.top = "0px";
-      cropZone.style.left = "0px";
-      cropZone.style.height = "300px";
-      cropZone.style.width = "300px";
-      cropZone.style.borderStyle = "";
-      resetHandlePositions(handleClass);
     };
 
     var roundCoord = function(num) {
@@ -395,26 +397,27 @@ button.crop {
     seh.on("dragMove", function(instance, event, pointer) {
       var adjX = instance.position.x - instance.startPosition.x;
       var adjY = instance.position.y - instance.startPosition.y;
-console.log('adj', adjX+', '+adjY);
 
       // Square aspect ratio.
       if (adjY < adjX) { adjY = adjX; }
       if (adjY > adjX) { adjX = adjY; }
-console.log('cropObject.cropStopX', cropObject.cropStopX);
-console.log('cropObject.cropStopY', cropObject.cropStopY);
+console.log('cropObject.cropStop:', cropObject.cropStopX+', '+cropObject.cropStopY);
+      
       // Calculate new dimensions.
       var calcX = Math.round(cropObject.cropStopX + adjX);
       var calcY = Math.round(cropObject.cropStopY + adjY);
-
+console.log('new calc:', calcX +', '+calcY );
       // Prevent handle from moving cropper out of bounds.
       var minX = defaultWidth + 2;
       var minY = defaultHeight + 2;
       if (calcX < minX) { calcX = minX; }
       if (calcY < minY) { calcY = minY; }
 
-      if (calcY > limit) { calcY = limit; }
-      if (calcX > limit) { calcX = limit; }
-console.log('calc:', calcX +', '+calcY );
+      var maxY = limit - cropZone.offsetTop - 2;
+      var maxX = limit - cropZone.offsetLeft - 2;
+      if (calcY > maxY) { calcY = maxY; }
+      if (calcX > maxX) { calcX = maxX; }
+console.log('limit calc:', calcX +', '+calcY );
       // Apply new dimenstions.
       cropZone.style.height = calcY + 'px';
       cropZone.style.width = calcX + 'px';      
