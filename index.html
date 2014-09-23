@@ -171,8 +171,8 @@ button.crop {
 	cursor: move;
 	min-height: 300px;
 	min-width: 300px;
-	height: auto;
-	width: auto;
+	height: 100%;
+	width: 100%;
 	position: absolute;
 }
 .handle {
@@ -371,14 +371,40 @@ button.crop {
 		setAction("img-crop", "click", showModal);
 		setAction("cancel", "click", hideModal);
 		setAction("crop", "click", doCrop);
-
+    setCoords();
 		
 		var seh = new Draggabilly(seH, { containment: "#crop-container"});
 		seh.on("dragStart", function(instance, event, pointer) {
 			cropZone.savedBorder = getStyle(cropZone).borderStyle;
 			cropZone.style.borderStyle = "dashed";
 		});
-		seh.on("dragMove", function(instance, event, pointer) {});
+		seh.on("dragMove", function(instance, event, pointer) {
+      var adjX = instance.position.x - instance.startPosition.x;
+      var adjY = instance.position.y - instance.startPosition.y;
+
+      // Square aspect ratio.
+      if (adjY > adjX) { adjX = adjY; }
+      if (adjY < adjX) { adjY = adjX; }
+
+      // Calculate new dimensions.
+      var calcY = Math.round(cropObject.cropStopY + adjY);
+      var calcX = Math.round(cropObject.cropStopX + adjX);
+
+      // Prevent handle from moving cropper out of bounds.
+      var minY = defaultHeight - 2; // 2px borders...
+      var minX = defaultWidth - 2;
+      if (calcY < minY) { calcY = minY; }
+      if (calcX < minX) { calcX = minX; }
+
+      var maxY = cropBound.offsetHeight - 2;
+      var maxX = cropBound.offsetWidth - 2;
+      if (calcY > maxY) { calcY = maxY; }
+      if (calcX > maxX) { calcX = maxX; }
+
+      // Apply new dimenstions.
+      cropZone.style.height = calcY + 'px';
+      cropZone.style.width = calcX + 'px';      
+    });
 		seh.on("dragEnd", function(instance, event, pointer) {
 			// console.log('cropZone', cropZone);
 			// setCoords(d.position.x, d.position.y, (d.position.x + d.size.innerWidth), (d.position.y + d.size.innerHeight));
@@ -386,8 +412,8 @@ button.crop {
 			// Update UI.
 			var handleX = cropZone.offsetWidth - 8;
 			var handleY = cropZone.offsetHeight - 8;
-			if (instance.position.x != handleY) { instance.position.x = handleY; instance.element.style.left = handleY+"px"; }
-			if (instance.position.y != handleX) { instance.position.y = handleX; instance.element.style.top = handleX+"px"; }
+			if (instance.position.x != handleX) { instance.position.x = handleX; seh.element.style.left = handleX+"px"; }
+			if (instance.position.y != handleY) { instance.position.y = handleY; seh.element.style.top = handleY+"px"; }
 			cropZone.style.borderStyle = cropZone.savedBorder;
 		});
 
@@ -434,12 +460,11 @@ button.crop {
 		var d = new Draggabilly(cropZone, { containment: "#crop-container", handle: ".dragger"});
 		d.on("dragStart", function(instance, event, pointer) {
 			nwh.isEnabled = seh.isEnabled = false; // Disable resize handles.
-			cropZone.savedBorder = getStyle(cropZone).borderStyle;
 			cropZone.style.borderStyle = "dashed";
 		});
 		d.on("dragEnd", function(d, event, pointer) {
 			setCoords(d.position.x, d.position.y, (d.position.x + d.size.innerWidth), (d.position.y + d.size.innerHeight));
-			cropZone.style.borderStyle = cropZone.savedBorder;
+			cropZone.style.borderStyle = "";
 			nwh.isEnabled = seh.isEnabled = true; // Enable resize handles.
 		});
 
