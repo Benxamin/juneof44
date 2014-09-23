@@ -274,10 +274,12 @@ button.crop {
     var defaultWidth = 300;
     var zoneH = cropZone.offsetHeight || defaultHeight;
     var zoneW = cropZone.offsetWidth || defaultWidth;
+    var limit = defaultHeight;
 
     if (!cropZone.style.top) cropZone.style.top = defaultTop + "px";
     if (!cropZone.style.left) cropZone.style.left = defaultLeft + "px";
 
+    // Cross browser getStyle.
     var defView = document.defaultView;
     var getStyle = (defView && defView.getComputedStyle)
                    ? function(elem) { return defView.getComputedStyle(elem, null); } 
@@ -309,6 +311,10 @@ button.crop {
     var showModal = function() {
       submodal.setAttribute("style", "display:table;");
       submodal.className += ' show';
+
+      // Set image limiting dimension.
+      limit = (cropBound.offsetWidth > cropBound.offsetHeight) ? cropBound.offsetHeight : cropBound.offsetWidth;
+
       if(document.addEventListener) {
         return document.addEventListener("keydown", escapeModal, false);
       }
@@ -394,7 +400,8 @@ console.log('adj', adjX+', '+adjY);
       // Square aspect ratio.
       if (adjY < adjX) { adjY = adjX; }
       if (adjY > adjX) { adjX = adjY; }
-
+console.log('cropObject.cropStopX', cropObject.cropStopX);
+console.log('cropObject.cropStopY', cropObject.cropStopY);
       // Calculate new dimensions.
       var calcX = Math.round(cropObject.cropStopX + adjX);
       var calcY = Math.round(cropObject.cropStopY + adjY);
@@ -405,11 +412,9 @@ console.log('adj', adjX+', '+adjY);
       if (calcX < minX) { calcX = minX; }
       if (calcY < minY) { calcY = minY; }
 
-      var maxX = cropBound.offsetWidth;
-      var maxY = cropBound.offsetHeight;
-      if (calcY > maxY) { calcY = maxY; }
-      if (calcX > maxX) { calcX = maxX; }
-      console.log('calc:', calcX +', '+calcY );
+      if (calcY > limit) { calcY = limit; }
+      if (calcX > limit) { calcX = limit; }
+console.log('calc:', calcX +', '+calcY );
       // Apply new dimenstions.
       cropZone.style.height = calcY + 'px';
       cropZone.style.width = calcX + 'px';      
