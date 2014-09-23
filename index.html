@@ -165,6 +165,7 @@ button.crop {
 }
 .overlay.is-dragging {
 	background: rgba(255,255,255,0.15);
+	border-style: dashed;
 }
 .dragger {
 	cursor: move;
@@ -181,6 +182,11 @@ button.crop {
 	width: 11px;
 	bottom: -6px;
 	opacity: 0.75
+}
+.overlay.is-dragging .handle, 
+.handle.is-dragging {
+	background: transparent;
+	opacity: 0.00;
 }
 .handle.nw,
 .handle.ne {
@@ -239,10 +245,8 @@ button.crop {
 					</div>
 					<div class="overlay" id="crop-zone" draggable="true">
 						<div class="dragger"></div>
-						<div class="handle nw"></div>
-						<!-- <div class="handle ne"></div> -->
-						<div class="handle se"></div>
-						<!-- <div class="handle sw"></div> -->
+						<div class="handle nw" id="nw-handle"></div>
+						<div class="handle se" id="se-handle"></div>
 					</div>
 				</div>
 			</div>
@@ -250,25 +254,80 @@ button.crop {
 	</div>
 
 	<script type="text/javascript">
+	console.clear();
 		var submodal =  document.getElementById("cropModal");
 		if (!submodal) {
 			throw new Error("No element 'submodal'");
 		}
+		var dragging = false;
 		var cropObject = {};
+		var cropZone = document.getElementById("crop-zone");
+		var cropBound= document.getElementById("crop-container");
+		var nwH = document.getElementById("nw-handle");
+		var seH = document.getElementById("se-handle");
 
-		var setAction = function(className, eventName, callback) {
+		// Sane defaults.
+		var defaultHeight = 300;
+		var defaultWidth = 300;
+		var zoneH = cropZone.offsetHeight || defaultHeight;
+		var zoneW = cropZone.offsetWidth || defaultWidth;
+
+		if (!cropZone.style.top) cropZone.style.top = "0px";
+		if (!cropZone.style.left) cropZone.style.left = "0px";
+
+
+		var defView = document.defaultView;
+
+		var getStyle = defView && defView.getComputedStyle ?
+		  function( elem ) {
+		    return defView.getComputedStyle( elem, null );
+		  } :
+		  function( elem ) {
+		    return elem.currentStyle;
+		  };
+
+		var setAction = function(className, eventName, handler) {
 			var ctls = document.getElementsByClassName(className);
-			if (ctls && ctls.length > 0) {
+			if (ctls && ctls.length) {
 				var i = 0;
 				for(i; i < ctls.length; i += 1) {
 					if (ctls[i].addEventListener) {
-					  ctls[i].addEventListener(eventName, callback, false);
+					  ctls[i].addEventListener(eventName, handler, false);
 					} else if (ctls[i].attachEvent) {
-					  el.attachEvent('on'+ eventName, callback);
+					  el.attachEvent('on'+ eventName, handler);
 					}
 				}
 			}
-		}
+		};
+
+		var removeAction = function(element, eventName, handler) {
+			eventName = 'on' + eventName;
+			if (element.removeEventListener) {
+				element.removeEventListener(eventName, handler, false);
+			} else if (element.detachEvent) {
+				element.detachEvent(eventName, handler);
+			}
+		};
+
+		var showModal = function() {
+			submodal.setAttribute("style", "display:table;");
+			submodal.className += ' show';
+			if(document.addEventListener) {
+				return document.addEventListener("keydown", escapeModal, false);
+			}
+			document.attachEvent("keydown", escapeModal);
+		};
+
+		var hideModal = function() {
+			if (submodal.className.indexOf("show") > -1) {
+				submodal.setAttribute("style", "display:none;");
+				submodal.className = submodal.className.replace(/\bshow\b/,'');
+				if(document.removeEventListener) {
+					return document.removeEventListener("keydown", escapeModal, false);
+				}
+				document.detachEvent("keydown", escapeModal);
+			}
+		};
 
 		var escapeModal = function(e) {
 			e = e || window.event;
@@ -276,51 +335,114 @@ button.crop {
 			if (keycode === 27) {
 				hideModal(submodal);
 			}
+			// Reset the cropZone.
+			cropZone.style.top = "0px";
+			cropZone.style.left = "0px";
+			cropZone.style.height = "300px";
+			cropZone.style.width = "300px";
+			cropZone.style.borderStyle = "";
 		};
 
-		var showModal = function() {
-			submodal.setAttribute("style", "display:table;");
-			submodal.className += ' show';
-			document.addEventListener("keydown", escapeModal, false);
-		};
-
-		var hideModal = function() {
-			if (submodal.className.indexOf("show") > -1) {
-				submodal.setAttribute("style", "display:none;");
-				submodal.className = submodal.className.replace(/\bshow\b/,'');
-				document.removeEventListener("keydown", escapeModal, false);
+		var roundCoord = function(num, defaultNum) {
+			if (num) {
+				if (num < 1) return 0;
+				return Math.round(num);
 			}
+			return defaultNum;
 		};
 
-		var resizeCropFrame = function(event) {
-			console.dir(event);
+		var setCoords = function (startX, startY, endX, endY) {
+			cropObject.cropStartX = roundCoord(startX, 0);
+			cropObject.cropStartY = roundCoord(startY, 0);
+			cropObject.cropStopX = roundCoord(endX, defaultWidth);
+			cropObject.cropStopY = roundCoord(endY, defaultHeight);
+			console.log('coord set! ', cropObject);
 		};
 
-		var doCrop = function() {
-			console.log("Done!");
-			// TODO: GET request to API
-			// TODO: API
-			// sendCrop();
+		var doCrop = function(coords) {
+			console.log('doCrop coords:', coords);
+			// TODO: build GET request for API
+			// TODO: call API
+			// Handle response async.
 			hideModal();
-			// console.log("cropObject: "+ cropObject);
-			console.dir(cropObject);
+			console.log("Done!");
 		};
 
 		setAction("img-crop", "click", showModal);
 		setAction("cancel", "click", hideModal);
 		setAction("crop", "click", doCrop);
-		setAction("se", "mousedown", resizeCropFrame);
 
-		var cropZone = document.getElementById("crop-zone");
-		var d = new Draggabilly(cropZone, { containment: "#crop-container", handle: ".dragger"});
-		d.on("dragEnd", function(d, event, pointer) {
-			cropObject = {
-				"cropStartX": d.position.x,
-				"cropStartY": d.position.y,
-				"cropStopX": (d.position.x + d.size.innerWidth),
-				"cropStopY": (d.position.y + d.size.innerHeight)
-			};
+		
+		var seh = new Draggabilly(seH, { containment: "#crop-container"});
+		seh.on("dragStart", function(instance, event, pointer) {
+			cropZone.savedBorder = getStyle(cropZone).borderStyle;
+			cropZone.style.borderStyle = "dashed";
 		});
+		seh.on("dragMove", function(instance, event, pointer) {});
+		seh.on("dragEnd", function(instance, event, pointer) {
+			// console.log('cropZone', cropZone);
+			// setCoords(d.position.x, d.position.y, (d.position.x + d.size.innerWidth), (d.position.y + d.size.innerHeight));
+
+			// Update UI.
+			var handleX = cropZone.offsetWidth - 8;
+			var handleY = cropZone.offsetHeight - 8;
+			if (instance.position.x != handleY) { instance.position.x = handleY; instance.element.style.left = handleY+"px"; }
+			if (instance.position.y != handleX) { instance.position.y = handleX; instance.element.style.top = handleX+"px"; }
+			cropZone.style.borderStyle = cropZone.savedBorder;
+		});
+
+		var nwh = new Draggabilly(nwH, { containment: "#crop-container"});
+		nwh.isEnabled = false; // Enable after relocating the cropZone.
+		nwh.on("dragStart", function(instance, event, pointer) {
+			cropZone.savedBorder = getStyle(cropZone).borderStyle;
+			cropZone.style.borderStyle = "dashed";
+		});
+		nwh.on("dragMove", function(instance, event, pointer) {
+			var adjX = instance.position.x - instance.startPosition.x;
+			var adjY = instance.position.y - instance.startPosition.y;
+
+			// Square aspect ratio.
+			if (adjY > adjX) { adjX = adjY; }
+			if (adjY < adjX) { adjY = adjX; }
+
+			// Calculate new dimensions.
+			var calcY = Math.round(cropObject.cropStartY + adjY);
+			var calcX = Math.round(cropObject.cropStartX + adjX);
+			
+			// Prevent handle from moving cropper out of bounds.
+			var maxY = cropBound.offsetHeight - defaultHeight - 2; // 2px borders...
+			var maxX = cropBound.offsetWidth - defaultWidth - 2;
+			if (calcX > maxX) { calcX = maxX; }
+			if (calcY > maxY) { calcY = maxY; }
+
+			// Apply new dimenstions.
+			cropZone.style.top = calcY + 'px';
+			cropZone.style.left = calcX + 'px';
+			cropZone.style.height = Math.round(defaultHeight - adjY) + 'px';
+			cropZone.style.width = Math.round(defaultWidth - adjX) + 'px';
+		});
+		nwh.on("dragEnd", function(instance, event, pointer) {
+			console.log('cropZone', cropZone);
+			setCoords(d.position.x, d.position.y, (d.position.x + d.size.innerWidth), (d.position.y + d.size.innerHeight));
+
+			// Update UI.
+			if (instance.position.x != -5) { instance.position.x = -5; instance.element.style.left = "-5px"; }
+			if (instance.position.y != -5) { instance.position.y = -5; instance.element.style.top = "-5px"; }
+			cropZone.style.borderStyle = cropZone.savedBorder;
+		});
+
+		var d = new Draggabilly(cropZone, { containment: "#crop-container", handle: ".dragger"});
+		d.on("dragStart", function(instance, event, pointer) {
+			nwh.isEnabled = seh.isEnabled = false; // Disable resize handles.
+			cropZone.savedBorder = getStyle(cropZone).borderStyle;
+			cropZone.style.borderStyle = "dashed";
+		});
+		d.on("dragEnd", function(d, event, pointer) {
+			setCoords(d.position.x, d.position.y, (d.position.x + d.size.innerWidth), (d.position.y + d.size.innerHeight));
+			cropZone.style.borderStyle = cropZone.savedBorder;
+			nwh.isEnabled = seh.isEnabled = true; // Enable resize handles.
+		});
+
 
 	</script>
 </body>
