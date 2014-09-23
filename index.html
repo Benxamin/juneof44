@@ -254,7 +254,6 @@ button.crop {
   </div>
 
   <script type="text/javascript">
-  console.clear();
     var submodal =  document.getElementById("cropModal");
     if (!submodal) {
       throw new Error("No element 'submodal'");
@@ -275,6 +274,7 @@ button.crop {
     var zoneH = cropZone.offsetHeight || defaultHeight;
     var zoneW = cropZone.offsetWidth || defaultWidth;
     var limit = defaultHeight;
+    var orientation = {};
 
     if (!cropZone.style.top) cropZone.style.top = defaultTop + "px";
     if (!cropZone.style.left) cropZone.style.left = defaultLeft + "px";
@@ -312,9 +312,16 @@ button.crop {
       submodal.setAttribute("style", "display:table;");
       submodal.className += ' show';
 
-      // Set image limiting dimension.
-      limit = (cropBound.offsetWidth > cropBound.offsetHeight) ? cropBound.offsetHeight : cropBound.offsetWidth;
-
+      // Set image limiting dimension and orientation.
+      if (cropBound.offsetWidth > cropBound.offsetHeight) {
+        limit = cropBound.offsetHeight;
+        orientation.h = true;
+        orientation.v = false;
+      } else {
+        limit = cropBound.offsetWidth;
+        orientation.h = false;
+        orientation.v = true;
+      }
       if(document.addEventListener) {
         return document.addEventListener("keydown", escapeModal, false);
       }
@@ -386,41 +393,43 @@ button.crop {
       }
     };
 
+    // Bind events.
     setAction("img-crop", "click", showModal);
     setAction("cancel", "click", hideModal);
     setAction("crop", "click", doCrop);
     setCoords();
 
+    // Instantiate the southeast handle.
     var seh = new Draggabilly(seH, { containment: "#crop-container"});
-
+    
     seh.on("dragStart", dashBorder);
     seh.on("dragMove", function(instance, event, pointer) {
       var adjX = instance.position.x - instance.startPosition.x;
       var adjY = instance.position.y - instance.startPosition.y;
 
-      // Square aspect ratio.
+      // Square cropper aspect ratio: make the smaller equal to the larger.
       if (adjY < adjX) { adjY = adjX; }
       if (adjY > adjX) { adjX = adjY; }
-      console.log('adjX', adjX);
-      console.log('adjY', adjY);
-console.log('cropObject.cropStop:', cropObject.cropStopX+', '+cropObject.cropStopY);
-      
+console.log('\nadj:', adjX+', '+adjY);
+
       // Calculate where user wants to go dimensions.
       var calcX = Math.round(cropObject.cropStopX + adjX);
       var calcY = Math.round(cropObject.cropStopY + adjY);
-console.log('new calc:', calcX +', '+calcY );
+console.log('user:', calcX +', '+calcY );
 
       // Prevent handle from moving cropper out of bounds.
-      var minX = defaultWidth + 2;
-      var minY = defaultHeight + 2;
+      var minX = defaultWidth;
+      var minY = defaultHeight;
       if (calcX < minX) { calcX = minX; }
       if (calcY < minY) { calcY = minY; }
+console.log('minc:', calcX +', '+calcY );
 
       var maxY = limit - cropZone.offsetTop - 2;
-      var maxX = cropBound - cropZone.offsetLeft - 2;
+      var maxX = cropBound.offsetWidth - cropZone.offsetLeft - 2;
+console.log(' max:', maxX +', '+maxY);      
       if (calcY > maxY) { calcY = maxY; }
       if (calcX > maxX) { calcX = maxX; }
-console.log('limit calc:', calcX +', '+calcY );
+console.log('maxc:', calcX +', '+calcY );
       // Apply new dimenstions.
       cropZone.style.height = calcY + 'px';
       cropZone.style.width = calcX + 'px';      
