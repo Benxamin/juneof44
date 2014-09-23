@@ -9,3 +9,7 @@ sketch of HTML & CSS for cropper
 1. [Every Free Day A Good Day](http://www.youtube.com/watch?v=rMCbDrgveS0)
 1. [Modern Hereditary Dance Steps](http://www.youtube.com/watch?v=mJ5C1paZCoU)
 1. [Degenerate](https://www.youtube.com/watch?v=ENowO6cPjoQ)
+
+
+### Tropics and Meridians
+1. [Anisette](https://www.youtube.com/watch?v=p1ItqLEkznU)
