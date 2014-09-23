@@ -405,53 +405,81 @@ button.crop {
     // Instantiate the southeast handle.
     var seh = new Draggabilly(seH, { containment: "#crop-container"});
 
-    seh.on("dragStart", dashBorder);
+    seh.on("dragStart", function() {
+      dashBorder();
+      zoneT = cropZone.offsetTop;
+      zoneL = cropZone.offsetLeft;
+      zoneH = zoneT + cropZone.offsetHeight;
+      zoneW = zoneL + cropZone.offsetWidth;
+      console.log('zoneL:', zoneL, 'zoneT:', zoneT);
+      console.log('zoneW:', zoneW, 'zoneH:', zoneH);
+    });
+
     seh.on("dragMove", function(instance, event, pointer) {
-console.log('instance.position.x', instance.position.x+', '+instance.position.y);
-console.log('instance.startPosition', instance.startPosition.x+', '+instance.startPosition.y);
       var adjX = Math.round(instance.position.x - instance.startPosition.x);
       var adjY = Math.round(instance.position.y - instance.startPosition.y);
-console.log('\n adj:', adjX+', '+adjY);
-console.log('sqdj:', adjX+', '+adjY);
 
-      // Calculate where user wants to go dimensions.
-      var calcX = cropObject.cropStopX + adjX;
-      var calcY = cropObject.cropStopY + adjY;
-console.log('user:', calcX +', '+calcY );
+      // Square aspect ratio.
+      if (adjY > adjX) { adjX = adjY; }
+      if (adjY < adjX) { adjY = adjX; }
+console.log('\nsquare:', adjX +', '+adjY );
 
-      // Prevent handle from moving cropper out of bounds.
-      var minX = defaultWidth;
-      var minY = defaultHeight;
-      if (calcX < minX) { calcX = minX; }
-      if (calcY < minY) { calcY = minY; }
-console.log('minc:', calcX +', '+calcY );
+      // Calculate desired dimensions.
+      var calcX = zoneW + adjX - 2;
+      var calcY = zoneH + adjY - 2;
+console.log('desired:', calcX +', '+calcY );
 
-      var maxY = limit - cropZone.offsetTop - 2;
-      var maxX = cropBound.offsetWidth - cropZone.offsetLeft - 2;
-
-console.log(' max:', maxX +', '+maxY);      
-      if (calcY > maxY) { calcY = maxY; }
-      if (calcX > maxX) { calcX = maxX; }
-console.log('maxc:', calcX +', '+calcY );
-
-      if ((calcX != calcY) && orientation.h) {
-        calcX = calcY;
+      // Prevent squashing zone.
+      if (calcX < zoneL + defaultWidth) {
+        calcX = zoneL;
       }
-      if ((calcX != calcY) && orientation.v) {
-        calcY = calcX;
+      if (calcY < zoneT + defaultHeight) {
+        calcY = zoneT;
       }
+console.log('squash:', calcX +', '+calcY );
+//       var maxY = limit - cropZone.offsetTop - 2;
+//       var maxX = cropBound.offsetWidth - cropZone.offsetLeft - 2;
 
+      // if ((calcX != calcY) && orientation.h) { calcX = calcY; }
+      // if ((calcX != calcY) && orientation.v) { calcY = calcX; }
+
+      // Limit minimum size.
+      if (calcX < defaultWidth) { calcX = defaultWidth; }
+      if (calcY < defaultHeight) { calcY = defaultHeight; }
+console.log('calc min:', calcX +', '+calcY );
+
+console.log('bound:', cropBound.offsetWidth + ', '+ cropBound.offsetHeight);
+      // Limit maximum size.
+      if (calcX > cropBound.offsetWidth) { calcX = cropBound.offsetWidth; }
+      if (calcY > cropBound.offsetHeight) { calcY = cropBound.offsetHeight; }
+
+console.log('calc set:', (calcX - 2) +'px , '+ (calcY - 2) + 'px');
       // Apply new dimenstions.
-      cropZone.style.height = calcY + 'px';
-      cropZone.style.width = calcX + 'px';      
+      cropZone.style.top = zoneT;
+      cropZone.style.left = zoneL;
+      cropZone.style.width = (calcX - 2) + 'px';
+      cropZone.style.height = (calcY - 2) + 'px';
     });
+
+
+
+
+
     seh.on("dragEnd", function() {
       // Update crop dimensions.
-      setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
+      setCoords(cropZone.offsetLeft, cropZone.offsetTop, (cropZone.offsetLeft + cropZone.offsetWidth - 2), (cropZone.offsetTop + cropZone.offsetHeight - 2));
       // Update UI.
       resetHandlePositions(handleClass);
+      console.log('cropZone.savedBorder', cropZone.savedBorder);
       cropZone.style.borderStyle = cropZone.savedBorder;
     });
+
+
+
+
+
+
+
 
     // Instantiate the northwest handle.
     var nwh = new Draggabilly(nwH, { containment: "#crop-container"});
