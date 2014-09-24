@@ -411,8 +411,6 @@ button.crop {
       zoneT = cropObject.cropStartY;
       zoneW = cropObject.cropStopX - zoneL;
       zoneH = cropObject.cropStopY - zoneT;
-      console.log('zoneL:', zoneL, 'zoneT:', zoneT);
-      console.log('zoneW:', zoneW, 'zoneH:', zoneH);
     });
 
     seh.on("dragMove", function(instance, event, pointer) {
@@ -431,7 +429,7 @@ button.crop {
       if (calcX < defaultWidth) { calcX = defaultWidth; }
       if (calcY < defaultHeight) { calcY = defaultHeight; }
 
-      // Limit maximum size.
+      // Limit maximum size; enforce square aspect ratio.
       var maxX = cropBound.offsetWidth - 2 - zoneL;
       var maxY = cropBound.offsetHeight - 2 - zoneT;
       if (calcX > maxX) { calcX = maxX; calcY = calcX; }
@@ -441,10 +439,6 @@ button.crop {
       cropZone.style.width = (calcX) + 'px';
       cropZone.style.height = (calcY) + 'px';
     });
-
-
-
-
 
     seh.on("dragEnd", function() {
       // Update crop dimensions.
@@ -456,47 +450,46 @@ button.crop {
 
 
 
-
-
-
-
-
     // Instantiate the northwest handle.
     var nwh = new Draggabilly(nwH, { containment: "#crop-container"});
     nwh.isEnabled = false; // Enable after relocating the cropZone.
+
     nwh.on("dragStart", function() {
       dashBorder();
-      zoneT = cropZone.offsetTop;
-      zoneL = cropZone.offsetLeft;
+      zoneL = cropObject.cropStartX;
+      zoneT = cropObject.cropStartY;
+      zoneW = cropObject.cropStopX;
+      zoneH = cropObject.cropStopY;
+      console.log('zoneL:', zoneL, 'zoneT:', zoneT);
+      console.log('zoneW:', zoneW, 'zoneH:', zoneH);      
     });
+
     nwh.on("dragMove", function(instance, event, pointer) {
-      var adjX = instance.position.x - instance.startPosition.x;
-      var adjY = instance.position.y - instance.startPosition.y;
+      var adjX = Math.round(instance.position.x - instance.startPosition.x);
+      var adjY = Math.round(instance.position.y - instance.startPosition.y);
 
       // Square aspect ratio.
       if (adjY > adjX) { adjX = adjY; }
       if (adjY < adjX) { adjY = adjX; }
 
       // Calculate new dimensions.
-      var calcY = Math.round(cropObject.cropStartY + adjY);
-      var calcX = Math.round(cropObject.cropStartX + adjX);
-
-      // Prevent from squashing zone.
-      if (calcY > zoneT) {
-        calcY = zoneT;
-      }
-      if (calcX > zoneL) {
-        calcX = zoneL;
-      }
+      var calcX = (zoneL + adjX);
+      var calcY = (zoneT + adjY);
 
       // Prevent handle from moving cropper out of bounds.
-      var maxY = cropBound.offsetHeight - defaultHeight - 2; // 2px borders...
       var maxX = cropBound.offsetWidth - defaultWidth - 2;
+      var maxY = cropBound.offsetHeight - defaultHeight - 2; // 2px borders...
       if (calcX > maxX) { calcX = maxX; }
       if (calcY > maxY) { calcY = maxY; }
 
-      var zoneY = Math.round(cropObject.cropStopY - cropObject.cropStartY - adjY);
-      var zoneX = Math.round(cropObject.cropStopX - cropObject.cropStartX - adjX);
+      var zoneX = (zoneW - zoneL - adjX);
+      var zoneY = (zoneH - zoneT - adjY);
+
+      // Prevent from squashing zone.
+      var minX = zoneW - defaultWidth;
+      var minY = zoneH - defaultHeight; 
+      if (calcX > minX) { calcX = minX; }
+      if (calcY > minY) { calcY = minxY; }
 
       // Apply new dimenstions.
       cropZone.style.top = calcY + 'px';
@@ -504,9 +497,10 @@ button.crop {
       cropZone.style.height = zoneY + 'px';
       cropZone.style.width = zoneX + 'px';
     });
+
     nwh.on("dragEnd", function(instance, event, pointer) {
       // Update crop dimensions.
-      setCoords(cropZone.offsetLeft, cropZone.offsetTop, cropZone.offsetWidth, cropZone.offsetHeight);
+      setCoords(cropZone.offsetLeft, cropZone.offsetTop, zoneW, zoneH);
       // Update UI.
       resetHandlePositions(handleClass);
       cropZone.style.borderStyle = cropZone.savedBorder;
