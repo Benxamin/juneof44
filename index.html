@@ -371,16 +371,14 @@ button.crop {
       cropObject.cropStartY = startY ? roundCoord(startY) : 0;
       cropObject.cropStopX = endX ? roundCoord(endX) : defaultWidth;
       cropObject.cropStopY = endY ? roundCoord(endY) : defaultHeight;
-      console.log('coord set! ', cropObject);
     };
 
-    var doCrop = function(coords) {
-      console.log('doCrop coords:', coords);
+    var doCrop = function(event) {
+      console.log('doCrop coords:', cropObject);
       // TODO: build GET request for API
       // TODO: call API
       // Handle response async.
       hideModal();
-      console.log("Done!");
     };
 
     var dashBorder = function() {
@@ -447,8 +445,6 @@ button.crop {
       resetHandlePositions(handleClass);
       cropZone.style.borderStyle = cropZone.savedBorder;
     });
-
-
 
     // Instantiate the northwest handle.
     var nwh = new Draggabilly(nwH, { containment: "#crop-container"});
