@@ -407,10 +407,10 @@ button.crop {
 
     seh.on("dragStart", function() {
       dashBorder();
-      zoneT = cropZone.offsetTop;
-      zoneL = cropZone.offsetLeft;
-      zoneH = zoneT + cropZone.offsetHeight;
-      zoneW = zoneL + cropZone.offsetWidth;
+      zoneL = cropObject.cropStartX;
+      zoneT = cropObject.cropStartY;
+      zoneW = cropObject.cropStopX - zoneL;
+      zoneH = cropObject.cropStopY - zoneT;
       console.log('zoneL:', zoneL, 'zoneT:', zoneT);
       console.log('zoneW:', zoneW, 'zoneH:', zoneH);
     });
@@ -424,41 +424,40 @@ button.crop {
       if (adjY < adjX) { adjY = adjX; }
 console.log('\nsquare:', adjX +', '+adjY );
 
-      // Calculate desired dimensions.
-      var calcX = zoneW + adjX - 2;
-      var calcY = zoneH + adjY - 2;
+      // Calculate desired zone dimensions.
+      var calcX = zoneW + adjX;
+      var calcY = zoneH + adjY;
 console.log('desired:', calcX +', '+calcY );
 
-      // Prevent squashing zone.
-      if (calcX < zoneL + defaultWidth) {
-        calcX = zoneL;
-      }
-      if (calcY < zoneT + defaultHeight) {
-        calcY = zoneT;
-      }
-console.log('squash:', calcX +', '+calcY );
-//       var maxY = limit - cropZone.offsetTop - 2;
-//       var maxX = cropBound.offsetWidth - cropZone.offsetLeft - 2;
+//       // Prevent squashing zone.
+//       if (calcX < zoneL + defaultWidth) {
+//         calcX = zoneL;
+//       }
+//       if (calcY < zoneT + defaultHeight) {
+//         calcY = zoneT;
+//       }
+// console.log('squash:', calcX +', '+calcY );
+// //       var maxY = limit - cropZone.offsetTop - 2;
+// //       var maxX = cropBound.offsetWidth - cropZone.offsetLeft - 2;
 
-      // if ((calcX != calcY) && orientation.h) { calcX = calcY; }
-      // if ((calcX != calcY) && orientation.v) { calcY = calcX; }
+//       // if ((calcX != calcY) && orientation.h) { calcX = calcY; }
+//       // if ((calcX != calcY) && orientation.v) { calcY = calcX; }
 
-      // Limit minimum size.
-      if (calcX < defaultWidth) { calcX = defaultWidth; }
-      if (calcY < defaultHeight) { calcY = defaultHeight; }
-console.log('calc min:', calcX +', '+calcY );
+//       // Limit minimum size.
+//       if (calcX < defaultWidth) { calcX = defaultWidth; }
+//       if (calcY < defaultHeight) { calcY = defaultHeight; }
+// console.log('calc min:', calcX +', '+calcY );
 
-console.log('bound:', cropBound.offsetWidth + ', '+ cropBound.offsetHeight);
-      // Limit maximum size.
-      if (calcX > cropBound.offsetWidth) { calcX = cropBound.offsetWidth; }
-      if (calcY > cropBound.offsetHeight) { calcY = cropBound.offsetHeight; }
+// console.log('bound:', cropBound.offsetWidth + ', '+ cropBound.offsetHeight);
+//       // Limit maximum size.
+//       if (calcX > cropBound.offsetWidth) { calcX = cropBound.offsetWidth; }
+//       if (calcY > cropBound.offsetHeight) { calcY = cropBound.offsetHeight; }
 
-console.log('calc set:', (calcX - 2) +'px , '+ (calcY - 2) + 'px');
+// console.log('calc set:', (calcX - 2) +'px , '+ (calcY - 2) + 'px');
+console.log('calc set:', (calcX) +'px , '+ (calcY) + 'px');
       // Apply new dimenstions.
-      cropZone.style.top = zoneT;
-      cropZone.style.left = zoneL;
-      cropZone.style.width = (calcX - 2) + 'px';
-      cropZone.style.height = (calcY - 2) + 'px';
+      cropZone.style.width = (calcX) + 'px';
+      cropZone.style.height = (calcY) + 'px';
     });
 
 
@@ -467,10 +466,9 @@ console.log('calc set:', (calcX - 2) +'px , '+ (calcY - 2) + 'px');
 
     seh.on("dragEnd", function() {
       // Update crop dimensions.
-      setCoords(cropZone.offsetLeft, cropZone.offsetTop, (cropZone.offsetLeft + cropZone.offsetWidth - 2), (cropZone.offsetTop + cropZone.offsetHeight - 2));
+      setCoords(zoneL, zoneT, (cropZone.offsetLeft + cropZone.offsetWidth - 2), (cropZone.offsetTop + cropZone.offsetHeight - 2));
       // Update UI.
       resetHandlePositions(handleClass);
-      console.log('cropZone.savedBorder', cropZone.savedBorder);
       cropZone.style.borderStyle = cropZone.savedBorder;
     });
 
