@@ -2,8 +2,15 @@
 <html>
 <head>
   <title>Cropper</title>
-  <script type="text/javascript" src="eventListener.polyfill.js"></script>
   <script type="text/javascript" src="draggabilly.min.js"></script>
+  <script type-"text/javascript">
+if(!document.getElementsByClassName) {
+    document.getElementsByClassName = function(className) {
+        return document.querySelectorAll("." + className);
+    };
+    Element.prototype.getElementsByClassName = document.getElementsByClassName;
+}
+  </script>
 </head>
 <body>
 <style type="text/css">
@@ -103,6 +110,14 @@ footer {
   vertical-align: middle;
 }
 /* Crop Tool */
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .crop-border {
   border: 1px solid #000;
   background: #666;
@@ -168,6 +183,8 @@ button.crop {
   border-style: dashed;
 }
 .dragger {
+  background: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7) repeat; /* IE8 */
+  background: rgba(255,255,255,0.01); /* IE10 */
   cursor: move;
   min-height: 300px;
   min-width: 300px;
@@ -187,6 +204,7 @@ button.crop {
 .handle.is-dragging {
   background: transparent;
   opacity: 0.00;
+  border: none; /* IE8 */
 }
 .handle.nw,
 .handle.ne {
@@ -243,10 +261,10 @@ button.crop {
             <button class="cancel">Cancel</button>
             <button class="crop">Done Cropping</button>
           </div>
-          <div class="overlay" id="crop-zone" draggable="true">
-            <div class="dragger"></div>
-            <div class="handle nw" id="nw-handle"></div>
-            <div class="handle se" id="se-handle"></div>
+          <div class="overlay no-select" id="crop-zone">
+            <div class="dragger no-select" draggable="true"></div>
+            <div class="handle nw no-select" id="nw-handle" draggable="true"></div>
+            <div class="handle se no-select" id="se-handle" draggable="true"></div>
           </div>
         </div>
       </div>
@@ -296,7 +314,7 @@ button.crop {
           if (ctls[i].addEventListener) {
             ctls[i].addEventListener(eventName, handler, false);
           } else if (ctls[i].attachEvent) {
-            el.attachEvent('on'+ eventName, handler);
+            ctls[i].attachEvent('on'+ eventName, handler);
           }
         }
       }
@@ -456,8 +474,6 @@ button.crop {
       zoneT = cropObject.cropStartY;
       zoneW = cropObject.cropStopX;
       zoneH = cropObject.cropStopY;
-      console.log('zoneL:', zoneL, 'zoneT:', zoneT);
-      console.log('zoneW:', zoneW, 'zoneH:', zoneH);      
     });
 
     nwh.on("dragMove", function(instance, event, pointer) {
