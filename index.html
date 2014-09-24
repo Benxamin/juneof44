@@ -422,39 +422,21 @@ button.crop {
       // Square aspect ratio.
       if (adjY > adjX) { adjX = adjY; }
       if (adjY < adjX) { adjY = adjX; }
-console.log('\nsquare:', adjX +', '+adjY );
 
       // Calculate desired zone dimensions.
       var calcX = zoneW + adjX;
       var calcY = zoneH + adjY;
-console.log('desired:', calcX +', '+calcY );
 
-//       // Prevent squashing zone.
-//       if (calcX < zoneL + defaultWidth) {
-//         calcX = zoneL;
-//       }
-//       if (calcY < zoneT + defaultHeight) {
-//         calcY = zoneT;
-//       }
-// console.log('squash:', calcX +', '+calcY );
-// //       var maxY = limit - cropZone.offsetTop - 2;
-// //       var maxX = cropBound.offsetWidth - cropZone.offsetLeft - 2;
+      // Limit minimum size.
+      if (calcX < defaultWidth) { calcX = defaultWidth; }
+      if (calcY < defaultHeight) { calcY = defaultHeight; }
 
-//       // if ((calcX != calcY) && orientation.h) { calcX = calcY; }
-//       // if ((calcX != calcY) && orientation.v) { calcY = calcX; }
+      // Limit maximum size.
+      var maxX = cropBound.offsetWidth - 2 - zoneL;
+      var maxY = cropBound.offsetHeight - 2 - zoneT;
+      if (calcX > maxX) { calcX = maxX; calcY = calcX; }
+      if (calcY > maxY) { calcY = maxY; calcX = calcY; }
 
-//       // Limit minimum size.
-//       if (calcX < defaultWidth) { calcX = defaultWidth; }
-//       if (calcY < defaultHeight) { calcY = defaultHeight; }
-// console.log('calc min:', calcX +', '+calcY );
-
-// console.log('bound:', cropBound.offsetWidth + ', '+ cropBound.offsetHeight);
-//       // Limit maximum size.
-//       if (calcX > cropBound.offsetWidth) { calcX = cropBound.offsetWidth; }
-//       if (calcY > cropBound.offsetHeight) { calcY = cropBound.offsetHeight; }
-
-// console.log('calc set:', (calcX - 2) +'px , '+ (calcY - 2) + 'px');
-console.log('calc set:', (calcX) +'px , '+ (calcY) + 'px');
       // Apply new dimenstions.
       cropZone.style.width = (calcX) + 'px';
       cropZone.style.height = (calcY) + 'px';
