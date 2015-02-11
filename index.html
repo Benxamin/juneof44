@@ -272,6 +272,12 @@ button.crop {
   </div>
 
   <script type="text/javascript">
+    if(!document.getElementsByClassName) {
+      document.getElementsByClassName = function(className) {
+          return document.querySelectorAll("." + className);
+      };
+      Element.prototype.getElementsByClassName = document.getElementsByClassName;
+    }
     var submodal =  document.getElementById("cropModal");
     if (!submodal) {
       throw new Error("No element 'submodal'");
